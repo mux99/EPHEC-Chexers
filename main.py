@@ -17,7 +17,7 @@ def on_draw():
 	win.clear()
 	back.draw()
 
-	white.draw()
+	white.draw() #temprary
 
 def update(delta_time):
 	pass
