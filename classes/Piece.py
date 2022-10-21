@@ -9,6 +9,8 @@ class Piece(object):
 		self._color = color
 		self._promotion = False
 
+		self.texture #wil store the sprite of the piece to be displayed
+
 	"""
 	promotion of piece to king
 	"""

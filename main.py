@@ -19,8 +19,18 @@ def on_draw():
 
 	white.draw() #temprary
 
-def update(delta_time):
-	pass
+#----TYPE of mouse move to be determined
+# @win.event
+# def on_mouse_press(x, y, button, modifiers):
+#     pass
+
+# @win.event
+# def on_mouse_release(x, y, button, modifiers):
+#     pass
+
+# @win.event
+# def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
+#     pass
 
 if __name__ == '__main__':
 	pyglet.clock.schedule_interval(update,1/60)

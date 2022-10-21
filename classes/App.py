@@ -17,6 +17,20 @@ class App():
 
 
 	"""
+		reset game state to default
+	"""
+	def reset(self):
+		pass
+
+
+	"""
+		fils the board with pieces on each starting locations
+	"""
+	def create_tiles(self):
+		pass
+
+
+	"""
 		receive coords of a click on screen and takes action on it:
 		- ignore coords out of bounds
 		- translate screen coords to game coords (fcts.py screen_to_board(x,y))
@@ -45,7 +59,7 @@ class App():
 		list all possible takes form selected piece to given coords
 		!! only enemy !!
 	"""
-	def list_takes(self,x,y,z)
+	def list_takes(self, x, y, z)
 		pass
 
 
@@ -55,12 +69,12 @@ class App():
 		True if a piece is in that place, False otherwise
 
 	"""
-	def is_pieces(p):
+	def is_pieces(self, p):
 		pass
 
 
 	"""
 		change coords of the selected tile
 	"""
-	def moove(x, y, z):
+	def moove(self, x, y, z):
 		pass
