@@ -1,4 +1,4 @@
-from fcts import screen_to_board
+from fcts import screen_to_board, board_to_screen
 
 class App():
 	"""
@@ -10,9 +10,9 @@ class App():
 		self.pause = False #will be used to toggle the pause menu display and deactivate clicking on pieces
 		self._score_P1 = 0 #scoring system TBD
 		self._score_P2 = 0 #scoring system TBD
-		self._hold = None #value is a (x, y ,z) coords of a selected tile. if selected display possible mooves, takes
+		self._hold = None #value is a (x, y ,z) coords of a selected tile. if selected display possible moves, takes
 
-		self.valid_mooves = [] #coords of valid tiles to move to (depending of selected tile)
+		self.valid_moves = [] #coords of valid tiles to move to (depending of selected tile)
 		self.valid_takes = [] #coords of pieces that can be taken (depending of selected tile)
 
 
@@ -24,7 +24,7 @@ class App():
 
 
 	"""
-		fils the board with pieces on each starting locations
+		fills the board with pieces on each starting locations
 	"""
 	def create_tiles(self):
 		pass
@@ -40,8 +40,8 @@ class App():
 	"""
 	def click(self, screen_x, screen_y, screen_max_x, screen_max_y):
 
-		#self.list_mooves() update valid mooves on first click (use list to validate move on second click)
-		#use self.move(x,y,z) to move the piece when necesary
+		#self.list_moves() update valid moves on first click (use list to validate move on second click)
+		#use self.move(x,y,z) to move the piece when necessary
 		pass
 
 
@@ -50,31 +50,46 @@ class App():
 		!! keep promoted in mind !!
 		!! keep 'infinite' board in mind !! (that's for later)
 	"""
-	def list_mooves(self):
-		#use self.is_pieces() to check multiple cases at once
-		pass
+	def list_moves(self):
+		if self._hold.promotion:
+			pass #undefined for now
+		else:
+			all_moves = [(self._hold.x + 2, self._hold.y, self._hold.z), (self._hold.x - 2, self._hold.y, self._hold.z), (self._hold.x, self._hold.y, self._hold.z + 2), (self._hold.x, self._hold.y, self._hold.z - 2)]
+			check_moves = has_pieces(self, all_moves)
+			for m in all_moves:
+				if not check_moves[all_moves.index(m)]:
+					del all_moves[all_moves.index(m)]
 
 
 	"""
-		list all possible takes form selected piece to given coords
+		list all possible takes from selected piece to given coords
 		!! only enemy !!
 	"""
-	def list_takes(self, x, y, z)
+	def list_takes(self, x, y, z):
 		pass
 
 
 	"""
 	receive a list of coords (x,y,z),
-	rerurn a list of same lenght containig a boolean:
+	returns a list of same length containing booleans:
 		True if a piece is in that place, False otherwise
 
 	"""
-	def is_pieces(self, p):
-		pass
+	def has_pieces(self, p):
+		bool_list = []
+		for coord in p:
+			for piece in self._pieces:
+				if coord == piece.coord:
+					bool_list.append(True)
+					break
+			else:
+				bool_list.append(False)
+		return bool_list
 
 
 	"""
-		change coords of the selected tile
+		change coords of the selected piece
 	"""
-	def moove(self, x, y, z):
-		pass
+	def move(self, x, y, z):
+		self._hold.move_piece(x, y, z)
+		self._hold.sprite.move_sprite(board_to_screen(x, y, z))
