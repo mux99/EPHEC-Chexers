@@ -2,12 +2,13 @@ import pyglet
 
 class Piece():
 	"""
-	class of a piece of ckeckers (on hexagonal tiled board)
+	class of a piece of checkers (on hexagonal tiled board)
 	"""
 	def __init__(self, x=0, y=0, z=0, color="White", texture=None, scale = 1):
 		self._x = x
 		self._y = y
 		self._z = z
+		self._coord = (self._x, self._y, self._z)
 		self._color = color
 		self._promotion = False
 
@@ -28,6 +29,10 @@ class Piece():
 	def draw(self):
 		self._sprite.draw()
 
+
+	@property
+	def coord(self):
+		return self._coord
 
 	@property
 	def promotion(self):
@@ -58,5 +63,15 @@ class Piece():
 		self._y = y
 
 	@z.setter
-	def y(self, z):
+	def z(self, z):
 		self._z = z
+
+	"""
+		change coords of the selected piece
+	"""
+
+	def move_piece(self, x, y, z):
+		self._x = x
+		self._y = y
+		self._z = z
+		self._coord = (x, y, z)
