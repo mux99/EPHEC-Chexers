@@ -1,4 +1,5 @@
-from fcts import screen_to_board
+from bin.fcts import screen_to_board, get_starting_pos
+from classes.piece import Piece
 
 class App():
 	"""
@@ -15,6 +16,14 @@ class App():
 		self.valid_mooves = [] #coords of valid tiles to move to (depending of selected tile)
 		self.valid_takes = [] #coords of pieces that can be taken (depending of selected tile)
 
+		self.board_size = 8
+
+		#textures
+		self._white = None
+		self._white_queen = None
+		self._black = None
+		self._black_queen = None
+		self._scale = 1
 
 	"""
 		reset game state to default
@@ -24,10 +33,28 @@ class App():
 
 
 	"""
-		fils the board with pieces on each starting locations
+		set textures (pyglet.image) for game pieces
 	"""
-	def create_tiles(self):
-		pass
+	def set_textures(self,white_texture, black_texture, scale=1):
+		self._white = white_texture
+		#self._white_queen = white_queen_texture
+		self._black = black_texture
+		#self._black_queen = black_queen_texture
+		self._scale = scale
+
+	def draw_textures(self):
+		for i in self._pieces:
+			i.draw()
+
+
+	"""
+
+	"""
+	def init_board(self):
+		pos = get_starting_pos(8)
+		for i in range(len(pos[0])):
+			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="white", texture=self._white, scale=self._scale))
+			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="black", texture=self._black, scale=self._scale))
 
 
 	"""
@@ -59,7 +86,7 @@ class App():
 		list all possible takes form selected piece to given coords
 		!! only enemy !!
 	"""
-	def list_takes(self, x, y, z)
+	def list_takes(self, x, y, z):
 		pass
 
 
