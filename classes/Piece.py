@@ -1,4 +1,5 @@
 import pyglet
+from bin.fcts import screen_to_board, board_to_screen
 
 class Piece():
 	"""
@@ -13,7 +14,14 @@ class Piece():
 		self._promotion = False
 
 		self._sprite = pyglet.sprite.Sprite(texture,0,0)
+		self._scale = scale
 		self._sprite.scale = scale
+
+	def __repr__(self):
+		return str(self)
+
+	def __str__(self):
+		return f"({self._x},{self._y},{self._z})"
 
 
 	"""
@@ -27,6 +35,9 @@ class Piece():
 		draw sprite of the piece
 	"""
 	def draw(self):
+		pos = board_to_screen(self._x,self._y,self._z)
+		self._sprite.x = ((pos[0]*125)+274)*self._scale
+		self._sprite.y = ((pos[1]*160)+50)*self._scale
 		self._sprite.draw()
 
 
