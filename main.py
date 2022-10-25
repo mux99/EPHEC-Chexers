@@ -7,8 +7,16 @@ from classes.app import App
 win = window.Window(resizable=True,caption="Checkers")
 app = App()
 
+
 @win.event
 def on_draw():
+	win.clear()
+
+	#adjust background scale
+	scale = win.get_size()[1] / back_base_height
+	back.scale = scale
+
+
 	back.draw()
 	app.draw_textures()
 
@@ -37,7 +45,8 @@ def update(dt):
 if __name__ == '__main__':
 	#add background
 	back = pyglet.sprite.Sprite(pyglet.resource.image("img/board.png"),0,0)
-	scale = win.get_size()[1] / back.height
+	back_base_height = back.height
+	scale = win.get_size()[1] / back_base_height
 	back.scale = scale
 
 	#load pieces textures
