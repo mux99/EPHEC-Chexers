@@ -18,7 +18,7 @@ def on_draw():
 
 
 	back.draw()
-	app.draw_textures()
+	app.draw_textures(win)
 
 
 """

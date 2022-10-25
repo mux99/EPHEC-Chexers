@@ -42,9 +42,9 @@ class App():
 		#self._black_queen = black_queen_texture
 		self._scale = scale
 
-	def draw_textures(self):
+	def draw_textures(self,window):
 		for i in self._pieces:
-			i.draw()
+			i.draw(window,self.board_size)
 
 
 	"""
@@ -55,7 +55,7 @@ class App():
 		print(pos)
 		for i in range(len(pos[0])):
 			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="white", texture=self._white, scale=self._scale))
-			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="black", texture=self._black, scale=self._scale))
+			self._pieces.append(Piece(x=pos[1][i][0], y=pos[1][i][1], z=pos[1][i][2], color="black", texture=self._black, scale=self._scale))
 
 
 	"""

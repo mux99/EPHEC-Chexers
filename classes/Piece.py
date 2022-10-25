@@ -14,6 +14,7 @@ class Piece():
 		self._promotion = False
 
 		self._sprite = pyglet.sprite.Sprite(texture,0,0)
+		self._base_height = self._sprite.height
 		self._scale = scale
 		self._sprite.scale = scale
 
@@ -34,10 +35,11 @@ class Piece():
 	"""
 		draw sprite of the piece
 	"""
-	def draw(self):
-		pos = board_to_screen(self._x,self._y,self._z)
-		self._sprite.x = ((pos[0]*125)+274)*self._scale
-		self._sprite.y = ((pos[1]*160)+50)*self._scale
+	def draw(self,window,board_size):
+		pos = board_to_screen(self._x, self._y, self._z, window, board_size)
+		self._sprite.x = pos[0]
+		self._sprite.y = pos[1]
+		self._sprite.scale = (pos[2] / self._base_height) * 0.75
 		self._sprite.draw()
 
 
