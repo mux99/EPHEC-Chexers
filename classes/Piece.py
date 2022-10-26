@@ -1,7 +1,7 @@
 import pyglet
 from bin.fcts import screen_to_board, board_to_screen
 
-class Piece():
+class Piece:
 	"""
 	class of a piece of checkers (on hexagonal tiled board)
 	"""
@@ -78,6 +78,10 @@ class Piece():
 	@z.setter
 	def z(self, z):
 		self._z = z
+
+	@property
+	def color(self):
+		return self._color
 
 	"""
 		change coords of the selected piece
