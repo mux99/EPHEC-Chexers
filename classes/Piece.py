@@ -14,9 +14,6 @@ class Piece():
 		self._promotion = False
 
 		self._sprite = pyglet.sprite.Sprite(texture,0,0)
-		self._base_height = self._sprite.height
-		self._scale = scale
-		self._sprite.scale = scale
 
 	def __repr__(self):
 		return str(self)
@@ -39,8 +36,11 @@ class Piece():
 		pos = board_to_screen(self._x, self._y, self._z, window, board_size)
 		self._sprite.x = pos[0]
 		self._sprite.y = pos[1]
-		self._sprite.scale = (pos[2] / self._base_height) * 0.75
 		self._sprite.draw()
+
+
+	def rescale(self,n):
+		self._sprite.scale = n
 
 
 	@property
