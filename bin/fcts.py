@@ -10,10 +10,10 @@ def screen_to_board(x, y):
 translate the coords of hex tiles to their screen coords
 """
 def board_to_screen(x, y, z, window, board_size):
-	tile_height = (window.height / board_size) * 1.25
-	print(window.height,tile_height)
-	out_x = ((z-y) * tile_height/4 * sqrt(3)) + (tile_height*1.01) + (x%2 * tile_height/4)
-	out_y = (x * tile_height * 0.75) + (tile_height*0.12)
+	tile_height = window.height / 6.25 #distance of two oposite points of tht hexagon
+
+	out_x = ((z-y) * tile_height/4 * sqrt(3)) - (x%2 * tile_height * sqrt(0.1875)) + (tile_height * 4 *sqrt(0.1875))
+	out_y = (x * tile_height * 0.75) + (tile_height * 0.5)
 	return (int(out_x),int(out_y),int(tile_height))
 
 """
