@@ -2,7 +2,7 @@ import pyglet
 from pyglet import clock, font, image, window
 from pyglet.window import key, Window
 
-from classes.app import App
+from classes.App import App
 
 win = window.Window(resizable=True,caption="Checkers")
 app = App()
@@ -19,7 +19,12 @@ def on_draw():
 @win.event
 def on_resize(width, height):
 	back.scale = height / back_base_height
-	#app.rescale(height / 8)
+	app.rescale(height)
+
+
+@win.event
+def on_mouse_press(x, y, button, modifiers):
+     pass
 
 
 """
@@ -28,12 +33,6 @@ dt: is the delta time between calls (---TBD--- check unit)
 """
 def update(dt):
 	pass #not usefull for now but mandatory
-
-
-#----TYPE of mouse move to be determined
-# @win.event
-# def on_mouse_press(x, y, button, modifiers):
-#     pass
 
 # @win.event
 # def on_mouse_release(x, y, button, modifiers):
