@@ -1,5 +1,5 @@
 from bin.fcts import screen_to_board, board_to_screen, get_starting_pos
-from classes.Piece import Piece
+from classes.piece import Piece
 
 class App():
 	"""

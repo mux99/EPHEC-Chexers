@@ -2,7 +2,7 @@ import pyglet
 from pyglet import clock, font, image, window
 from pyglet.window import key, Window
 
-from classes.App import App
+from classes.app import App
 
 win = window.Window(resizable=True,caption="Checkers")
 app = App()
