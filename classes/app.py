@@ -71,8 +71,8 @@ class App():
 		- on second make move if legal
 		- change self.player at the end of the turn(when a move is done)
 	"""
-	def click(self, screen_x, screen_y, screen_max_x, screen_max_y):
-
+	def click(self, screen_x, screen_y, window):
+		print(screen_to_board(screen_x,screen_y,window))
 		#self.list_moves() update valid moves on first click (use list to validate move on second click)
 		#use self.move(x,y,z) to move the piece when necessary
 		pass
