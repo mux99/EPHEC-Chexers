@@ -32,10 +32,11 @@ class Piece():
 	"""
 		draw sprite of the piece
 	"""
-	def draw(self,scale_x,scale_y):
-		pos = board_to_screen(self._x, self._y, self._z)
-		self._sprite.x = pos[0] * scale_x
-		self._sprite.y = pos[1] * scale_y
+	def draw(self,window):
+		tile_height = window.height / 6.25
+		pos = board_to_screen(self._x, self._y, self._z, window)
+		self._sprite.x = pos[0] * tile_height * 0.433
+		self._sprite.y = pos[1] * tile_height * 0.25
 		self._sprite.draw()
 		
 
@@ -63,6 +64,10 @@ class Piece():
 	def z(self):
 		return self._z
 
+	@property
+	def scale(self):
+		return self._sprite.scale
+
 	@x.setter
 	def x(self, x):
 		self._x = x
@@ -74,6 +79,10 @@ class Piece():
 	@z.setter
 	def z(self, z):
 		self._z = z
+
+	@scale.setter
+	def scale(self, scale):
+		self._sprite.scale = scale
 
 	"""
 		change coords of the selected piece

@@ -24,10 +24,6 @@ class App():
 		self._black = None
 		self._black_queen = None
 
-		#scales
-		self.x_scale = 1
-		self.y_scale = 1
-
 	"""
 		reset game state to default
 	"""
@@ -46,17 +42,16 @@ class App():
 		self._scale = scale
 
 
-	def rescale(self, height):
-		tile_height = height / (self.board_size*0.75)
-		#self.x_scale = ((z-y) * tile_height/4 * sqrt(3)) - (x%2 * tile_height * sqrt(0.1875)) + (tile_height * 4 *sqrt(0.1875))
-		#self.y_scale = (x * tile_height * 0.75) + (tile_height * 0.5)
+	def rescale(self,scale):
+		for i in self._pieces:
+			i.scale = scale
 
 
 	"""
 	"""
 	def draw_textures(self,window):
 		for i in self._pieces:
-			i.draw(self.x_scale,self.y_scale)
+			i.draw(window)
 
 
 	"""

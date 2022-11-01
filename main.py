@@ -18,9 +18,8 @@ def on_draw():
 
 @win.event
 def on_resize(width, height):
-	back.scale = height / back_base_height
-	app.rescale(height)
-
+	back.scale = height / back_img.height
+	app.rescale(height / 2000)
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):
@@ -44,9 +43,9 @@ def update(dt):
 
 if __name__ == '__main__':
 	#add background
-	back = pyglet.sprite.Sprite(pyglet.resource.image("img/pixel_perfect_board.png"),0,0)
-	back_base_height = back.height
-	scale = win.get_size()[1] / back_base_height
+	back_img = pyglet.resource.image("img/pixel_perfect_board.png")
+	back = pyglet.sprite.Sprite(back_img,0,0)
+	scale = win.get_size()[1] / back_img.height
 	back.scale = scale
 
 	#load pieces textures
