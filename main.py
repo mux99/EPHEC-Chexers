@@ -23,7 +23,7 @@ def on_resize(width, height):
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):
-     app.click(x,y,win)
+     app.click(x,y)
 
 
 """
