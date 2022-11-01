@@ -2,12 +2,11 @@ from math import sqrt
 """
 translate the coord on screen to x,y,z hexagonal axis
 """
-def screen_to_board(x, y, window):
-	tile_height = window.height / 6.25
-	board_x = (y - (tile_height * 0.5)) / (tile_height * 0.75)
-	board_y = -((x + (board_x % 2 * tile_height * sqrt(0.1875) - (tile_height * 4 * sqrt(0.1875)))) / ((tile_height / 8) * (sqrt(3) / 2))) + ((y - (tile_height * 0.5)) / (tile_height * 0.375))
-	board_z = -(board_x + board_y)
-	return (int(board_x), int(board_y), int(board_z))
+def screen_to_board(x, y):
+	board_x = (y - 2) / 3
+	board_y = (-x - board_x - (board_x % 2) + 4) / 2
+	board_z = -board_x - board_y
+	return (board_x, board_y, board_z)
 
 
 """
