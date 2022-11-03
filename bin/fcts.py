@@ -12,8 +12,10 @@ def screen_to_board(x, y):
 """
 translate the coords of hex tiles to their screen coords
 """
-def board_to_screen(x, y, z, window):
-	return (z-y-(x%2)+4,(3*x)+2)
+def board_to_screen(x, y, z, tile_height):
+	screen_x = (z-y - (x%2)+ 4) * tile_height * 0.433
+	screen_y = ((3*x) + 2) * tile_height * 0.25
+	return (screen_x,screen_y)
 
 """
 generate a list of starting locations for each color

@@ -19,7 +19,7 @@ def on_draw():
 @win.event
 def on_resize(width, height):
 	back.scale = height / back_img.height
-	app.rescale(height / 2000)
+	app.rescale(height)
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):

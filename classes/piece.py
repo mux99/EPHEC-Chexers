@@ -32,11 +32,10 @@ class Piece():
 	"""
 		draw sprite of the piece
 	"""
-	def draw(self,window):
-		tile_height = window.height / 6.25
-		pos = board_to_screen(self._x, self._y, self._z, window)
-		self._sprite.x = pos[0] * tile_height * 0.433
-		self._sprite.y = pos[1] * tile_height * 0.25
+	def draw(self,tile_height):
+		pos = board_to_screen(self._x, self._y, self._z, tile_height)
+		self._sprite.x = pos[0]
+		self._sprite.y = pos[1]
 		self._sprite.draw()
 		
 
