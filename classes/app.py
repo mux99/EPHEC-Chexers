@@ -75,7 +75,7 @@ class App():
 		- change self.player at the end of the turn(when a move is done)
 	"""
 	def click(self, screen_x, screen_y):
-		print(screen_to_board(screen_x,screen_y))
+		print(screen_to_board(screen_x,screen_y,self._tile_height))
 		#self.list_moves() update valid moves on first click (use list to validate move on second click)
 		#use self.move(x,y,z) to move the piece when necessary
 		pass

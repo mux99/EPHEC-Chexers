@@ -1,12 +1,15 @@
 from math import sqrt
+
 """
 translate the coord on screen to x,y,z hexagonal axis
 """
-def screen_to_board(x, y):
-	board_x = (y - 2) / 3
-	board_y = (-x - board_x - (board_x % 2) + 4) / 2
-	board_z = -board_x - board_y
-	return (board_x, board_y, board_z)
+def screen_to_board(x, y, tile_height):
+	x -= 2*sqrt(3)*tile_height/2
+	y -= tile_height/2
+	board_x = ((2*y)/3)/(tile_height/2)
+	board_z = ((x*sqrt(3) - y)/3)/(tile_height/2)
+	board_y = - board_x - board_z
+	return (round(board_x), round(board_y), round(board_z))
 
 
 """
