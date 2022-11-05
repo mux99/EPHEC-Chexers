@@ -12,6 +12,7 @@ class App():
 		self._score_P1 = 0 #scoring system TBD
 		self._score_P2 = 0 #scoring system TBD
 		self._hold = None #value is a (x, y ,z) coords of a selected tile. if selected display possible moves, takes
+		self._click = 0 #keeps track of the click
 
 		self.valid_moves = [] #coords of valid tiles to move to (depending of selected tile)
 		self.valid_takes = [] #coords of pieces that can be taken (depending of selected tile)
@@ -23,7 +24,6 @@ class App():
 		self._white_queen = None
 		self._black = None
 		self._black_queen = None
-
 		self._tile_height = 1
 
 	"""
@@ -75,16 +75,74 @@ class App():
 		- change self.player at the end of the turn(when a move is done)
 	"""
 	def click(self, screen_x, screen_y):
-		print(screen_to_board(screen_x,screen_y,self._tile_height))
-		#self.list_moves() update valid moves on first click (use list to validate move on second click)
-		#use self.move(x,y,z) to move the piece when necessary
+		#print(screen_to_board(screen_x,screen_y,self._tile_height))
+		"""coords = screen_to_board(screen_x,screen_y,self._tile_height) # incomplete, needs some tweaks and doesn't work for now
+																		#will need to look at it later
+		tile_has_piece = self.has_pieces([coords])[0]
+		#print(self.validate_click(coords[0], coords[1], coords[2]))
+		if not self.validate_click(coords[0], coords[1], coords[2]):
+			print("Invalid coords")
+			return
+		if self._click == 0:
+			if tile_has_piece:
+				piece = [obj.coord == coords for obj in self._pieces][0]
+				if not (piece.color == "white" and self._player == 1) or not (piece.color == "black" and self._player == 2):
+					return
+				self._hold = piece
+				self._click = 1
+				return
+		if not tile_has_piece:
+			self.list_moves()
+			if coords in self.valid_moves:
+				self.move(coords[0], coords[1], coords[2])
+				self._click = 0
+				if self._player:
+					self._player = 0
+				else:
+					self._player = 1
+				return"""
 		pass
 
+	"""
+		return True if the coordinate are valid, False if not
+		usable tiles coords follow a pattern like that:
+		if x = 0 | 1 -> y = 0 to -7
+		if x = 2 | 3 -> y = -1 to -8
+		if x = 4 | 5 -> y = -2 to -9
+		if x = 6 | 7 -> y = -3 to -10
+		z isn't relevant since it depends on the value of x and y at the same time
+		can't really check that without a big match statement with hardcoded values or lots of ifs :/
+		works at least i guess ¯\_(ツ)_/¯ 
+	"""
+	@staticmethod
+	def validate_click(x, y, z):
+		if (x + y + z) != 0:
+			print("Illegal Coordinates")
+			return False
+		match x:
+			case 0 | 1:
+				if -7 <= y <= 0:
+					return True
+				return False
+			case 2 | 3:
+				if -8 <= y <= -1:
+					return True
+				return False
+			case 4 | 5:
+				if -9 <= y <= -2:
+					return True
+				return False
+			case 6 | 7:
+				if -10 <= y <= -3:
+					return True
+				return False
+			case other:
+				return False
 
 	"""
-		list all coords the selected piece can move to
-		!! keep promoted in mind !!
-		!! keep 'infinite' board in mind !! (that's for later)
+			list all coords the selected piece can move to
+			!! keep promoted in mind !!
+			!! keep 'infinite' board in mind !! (that's for later)
 	"""
 	def list_moves(self):
 		if self._hold.promotion:
@@ -106,10 +164,9 @@ class App():
 
 
 	"""
-	receive a list of coords (x,y,z),
-	returns a list of same length containing booleans:
+		receive a list of coords (x,y,z),
+		returns a list of same length containing booleans:
 		True if a piece is in that place, False otherwise
-
 	"""
 	def has_pieces(self, p):
 		bool_list = []
