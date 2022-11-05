@@ -9,7 +9,6 @@ class Piece():
 		self._x = x
 		self._y = y
 		self._z = z
-		self._coord = (self._x, self._y, self._z)
 		self._color = color
 		self._promotion = False
 
@@ -62,16 +61,8 @@ class Piece():
 		return self._color
 
 	@property
-	def x(self):
-		return self._x
-
-	@property
-	def y(self):
-		return self._y
-
-	@property
-	def z(self):
-		return self._z
+	def coord(self):
+		return (self._x,self._y,self._z)
 
 	@property
 	def scale(self):
@@ -81,17 +72,11 @@ class Piece():
 	def texture(self):
 		return self._sprite.texture
 
-	@x.setter
-	def x(self, x):
-		self._x = x
-
-	@y.setter
-	def y(self, y):
-		self._y = y
-
-	@z.setter
-	def z(self, z):
-		self._z = z
+	@coord.setter
+	def coord(self, coord):
+		self._x = coord[0]
+		self._y = coord[1]
+		self._z = coord[2]
 
 	@scale.setter
 	def scale(self, scale):
