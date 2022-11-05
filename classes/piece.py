@@ -39,6 +39,16 @@ class Piece():
 		self._sprite.draw()
 		
 
+	"""
+		change coords of the selected piece
+	"""
+	def move_piece(self, x, y, z):
+		self._x = x
+		self._y = y
+		self._z = z
+		self._coord = (x, y, z)
+
+
 	@property
 	def coord(self):
 		return self._coord
@@ -67,6 +77,10 @@ class Piece():
 	def scale(self):
 		return self._sprite.scale
 
+	@property
+	def texture(self):
+		return self._sprite.texture
+
 	@x.setter
 	def x(self, x):
 		self._x = x
@@ -83,12 +97,7 @@ class Piece():
 	def scale(self, scale):
 		self._sprite.scale = scale
 
-	"""
-		change coords of the selected piece
-	"""
+	@texture.setter
+	def texture(self, texture):
+		self._sprite.texture = texture
 
-	def move_piece(self, x, y, z):
-		self._x = x
-		self._y = y
-		self._z = z
-		self._coord = (x, y, z)

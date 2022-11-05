@@ -15,7 +15,6 @@ def on_draw():
 	back.draw()
 	app.draw_textures(win)
 
-
 @win.event
 def on_resize(width, height):
 	back.scale = height / back_img.height
@@ -28,18 +27,11 @@ def on_mouse_press(x, y, button, modifiers):
 
 """
 called once per game tick
-dt: is the delta time between calls (---TBD--- check unit)
+dt: is the delta time between calls (---TBD--- check unit, ms?)
 """
 def update(dt):
 	pass #not usefull for now but mandatory
 
-# @win.event
-# def on_mouse_release(x, y, button, modifiers):
-#     pass
-
-# @win.event
-# def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-#     pass
 
 if __name__ == '__main__':
 	#add background
@@ -49,15 +41,17 @@ if __name__ == '__main__':
 	back.scale = scale
 
 	#load pieces textures
-	white = pyglet.resource.image("img/white.png")
-	black = pyglet.resource.image("img/black.png")
-	white.anchor_x = white.width // 2
-	white.anchor_y = white.height // 2
-	black.anchor_x = black.width // 2
-	black.anchor_y = black.height // 2
+	textures = {"white":pyglet.resource.image("img/white.png"),
+				"black":pyglet.resource.image("img/black.png"),
+				"selected":pyglet.resource.image("img/Yellow.png")}
+
+	#center texture pivot
+	for i in textures.keys():
+		textures[i].anchor_x = textures[i].width // 2
+		textures[i].anchor_y = textures[i].height // 2
 
 	#setup board
-	app.set_textures(white, black, scale=scale*0.73)
+	app.set_textures(textures, scale=scale*0.73)
 	app.init_board()
 
 	#launch pyglet app (!= app.py App)
