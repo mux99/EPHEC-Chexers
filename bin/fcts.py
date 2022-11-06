@@ -13,6 +13,13 @@ def screen_to_board(x, y, tile_height):
 
 
 """
+	add 2 3D vectors together
+"""
+def vector_add(vector1, vector2):
+	return (vector1[0]+vector2[0],vector1[1]+vector2[1],vector1[2]+vector2[2])
+
+
+"""
 translate the coords of hex tiles to their screen coords
 """
 def board_to_screen(x, y, z, tile_height):

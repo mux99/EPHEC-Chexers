@@ -13,6 +13,7 @@ class Piece():
 		self._promotion = False
 
 		self._sprite = pyglet.sprite.Sprite(texture,0,0)
+		self._sprite.scale = scale
 
 	def __repr__(self):
 		return str(self)

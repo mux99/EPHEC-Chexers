@@ -4,6 +4,7 @@ from pyglet.window import key, Window
 
 from classes.app import App
 
+
 win = window.Window(resizable=True,caption="Checkers")
 app = App()
 
@@ -15,10 +16,12 @@ def on_draw():
 	back.draw()
 	app.draw_textures()
 
+
 @win.event
 def on_resize(width, height):
 	back.scale = height / back_img.height
 	app.rescale(height)
+
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):
