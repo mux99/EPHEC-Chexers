@@ -20,6 +20,23 @@ def vector_add(vector1, vector2):
 
 
 """
+	add 2 3D vectors together
+"""
+def vector_sub(vector1, vector2):
+	return (vector1[0]-vector2[0],vector1[1]-vector2[1],vector1[2]-vector2[2])
+
+
+"""
+	return the oposite player
+"""
+def other_player(player):
+	if player == "black":
+		return "white"
+	elif player == "white":
+		return "black"
+
+
+"""
 translate the coords of hex tiles to their screen coords
 """
 def board_to_screen(x, y, z, tile_height):
@@ -29,7 +46,7 @@ def board_to_screen(x, y, z, tile_height):
 
 
 """
-generate a list of starting locations for each color
+generate a list of starting locations for each player
 """
 def get_starting_pos(n):
 	whites = []

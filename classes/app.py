@@ -17,6 +17,8 @@ class App():
 
 		#coords
 		self._clicked_coord = None
+		self._possible_takes = []
+		self._possible_moves = []
 
 		#textures
 		self.textures = {}
@@ -25,6 +27,10 @@ class App():
 
 		#scaling
 		self._tile_height = 1
+
+
+	def __str__(self):
+		return f"player:{self._curent_player}\nboard:{self._pieces}\nghosts:{self._ghost_pieces}\nclick:{self._clicked_coord}\ntakes:{self._possible_takes}\nmoves:{self._possible_moves}"
 
 
 	"""
@@ -59,16 +65,14 @@ class App():
 	def init_board(self):
 		pos = fcts.get_starting_pos(8)
 		for i in range(len(pos[0])):
-			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2],
-				color="white", texture=self.textures["white"], scale=self._scale))
-			self._pieces.append(Piece(x=pos[1][i][0], y=pos[1][i][1], z=pos[1][i][2],
-				color="black", texture=self.textures["black"], scale=self._scale))
+			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"], scale=self._scale))
+			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"], scale=self._scale))
 
 
 	"""
 		receive coords of a click on screen and takes action on it based on curent game state
 	"""
-	def click(self, screen_x, screen_y):		
+	def click(self, screen_x, screen_y):
 		click_coords = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
 
 		#discard invalid clicks
@@ -76,33 +80,52 @@ class App():
 			return
 
 		#select piece
-		if self.is_piece(click_coords) and self.get_piece(click_coords).color == self._curent_player:
+		if self.is_piece(click_coords) and self.get_piece(click_coords).player == self._curent_player:
 			if self._clicked_coord != None:
 				self.get_piece(self._clicked_coord).opacity = 255
 
 			self._clicked_coord = click_coords
 			self.get_piece(self._clicked_coord).opacity = self._select_opacity
 
+			self._possible_moves = self.get_moves(self._clicked_coord,self._curent_player)
+
 		#move selected
 		elif not self.is_piece(click_coords) and self._clicked_coord != None:
 			#only if move is valid
-			if click_coords in self.get_moves(self._clicked_coord,self._curent_player):
+			if click_coords in self._possible_moves:
 				self.get_piece(self._clicked_coord).coord = click_coords
 				self.get_piece(click_coords).opacity = 255
 				self._clicked_coord = None
 
-				#temporary
-				self.AI_move()
+				#remove taken pieces
+				for i in self._possible_takes:
+					self.take_piece(i)
+				self._possible_takes = []
 
-		#generate ghost pieces
+		#update gamestate
 		self._ghost_pieces = []
 		if self._clicked_coord != None:
-			for i in self.get_moves(self._clicked_coord,self._curent_player):
+			#generate ghost pieces
+			for i in self._possible_moves:
 				tmp = Piece(texture=self.textures[self._curent_player],scale=self._scale)
 				tmp.coord = i
 				tmp.opacity = 150
 				self._ghost_pieces.append(tmp)
 
+			#remove previous takes
+			for i in self._possible_takes:
+				self.get_piece(i).opacity = 255
+
+			#mark new takes
+			self._possible_takes = self.get_takes(self._clicked_coord,self._curent_player)
+			for i in self._possible_takes:
+				self.get_piece(i).opacity = 200
+
+		#AT temporary
+		if self._clicked_coord == None:
+			self.AI_move()
+
+		print(self)
 		
 	"""
 		receive coords (x,y,z),
@@ -126,15 +149,44 @@ class App():
 
 
 	"""
+	"""
+	def take_piece(self,coord):
+		print(len(self._pieces))
+		for i in range(len(self._pieces)-1):
+			print(i)
+			if self._pieces[i].coord == coord:
+				self._pieces.pop(i)
+
+
+	"""
+	"""
+	def get_takes(self,coord,player):
+		out = []
+		valid_takes = {(2,-1,-1):[(1,0,-1),(1,-1,0)],
+						(1,-2,1):[(1,-1,0),(0,-1,1)],
+						(-1,-1,2):[(0,-1,1),(-1,0,1)],
+						(-2,1,1):[(-1,0,1),(-1,1,0)],
+						(-1,2,-1):[(-1,1,0),(0,1,-1)],
+						(1,1,-2):[(0,1,-1),(1,0,-1)]}
+
+		for i in self.get_moves(coord,player):
+			for j in valid_takes[fcts.vector_sub(i,coord)]:
+				tmp = fcts.vector_add(coord,j)
+				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
+					out.append(fcts.vector_add(coord,j))
+		return list(dict.fromkeys(out))
+
+
+	"""
 		return all coords of valid move from given coord
 	"""
-	def get_moves(self,coord,color):
+	def get_moves(self,coord,player):
 		out = []
 		valid_moves = {"white":[(2,-1,-1),(1,-2,1),(1,1,-2)],
 						"black":[(-2,1,1),(-1,2,-1),(-1,-1,2)]}
 
 		#forward moves
-		for i in valid_moves[color]:
+		for i in valid_moves[player]:
 			tmp = fcts.vector_add(i,coord)
 			if not self.is_piece(tmp) and fcts.validate_click(tmp):
 				out.append(tmp)
@@ -150,7 +202,7 @@ class App():
 
 		#list all possible moves
 		for i in self._pieces:
-			if i.color == "black":
+			if i.player == "black":
 				for j in self.get_moves(i.coord,"black"):
 					moves.append((i.coord,j))
 

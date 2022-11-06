@@ -5,11 +5,11 @@ class Piece():
 	"""
 	class of a piece of checkers (on hexagonal tiled board)
 	"""
-	def __init__(self, x=0, y=0, z=0, color="White", texture=None, scale = 1):
-		self._x = x
-		self._y = y
-		self._z = z
-		self._color = color
+	def __init__(self, coord=(0,0,0), player="White", texture=None, scale = 1):
+		self._x = coord[0]
+		self._y = coord[1]
+		self._z = coord[2]
+		self._player = player
 		self._promotion = False
 
 		self._sprite = pyglet.sprite.Sprite(texture,0,0)
@@ -58,8 +58,8 @@ class Piece():
 		return self._promotion
 
 	@property
-	def color(self):
-		return self._color
+	def player(self):
+		return self._player
 
 	@property
 	def coord(self):
@@ -72,6 +72,10 @@ class Piece():
 	@property
 	def opacity(self):
 		return self._sprite.opacity
+
+	@property
+	def color(self):
+		return self._sprite.color
 
 	@coord.setter
 	def coord(self, coord):
@@ -86,4 +90,10 @@ class Piece():
 	@opacity.setter
 	def opacity(self, opacity):
 		self._sprite.opacity = opacity
+
+	@color.setter
+	def color(self, color):
+		self._sprite.color = color
+
+
 
