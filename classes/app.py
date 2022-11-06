@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 
+from random import randint
 import pyglet
 
 class App():
@@ -67,33 +68,7 @@ class App():
 	"""
 		receive coords of a click on screen and takes action on it based on curent game state
 	"""
-	def click(self, screen_x, screen_y):
-		"""coords = screen_to_board(screen_x,screen_y,self._tile_height) # incomplete, needs some tweaks and doesn't work for now
-																		#will need to look at it later
-		tile_has_piece = self.has_pieces([coords])[0]
-		#print(self.validate_click(coords[0], coords[1], coords[2]))
-		if not self.validate_click(coords[0], coords[1], coords[2]):
-			print("Invalid coords")
-			return
-		if self._click == 0:
-			if tile_has_piece:
-				piece = [obj.coord == coords for obj in self._pieces][0]
-				if not (piece.color == "white" and self._player == 1) or not (piece.color == "black" and self._player == 2):
-					return
-				self._hold = piece
-				self._click = 1
-				return
-		if not tile_has_piece:
-			self.list_moves()
-			if coords in self.valid_moves:
-				self.move(coords[0], coords[1], coords[2])
-				self._click = 0
-				if self._player:
-					self._player = 0
-				else:
-					self._player = 1
-				return"""
-		
+	def click(self, screen_x, screen_y):		
 		click_coords = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
 
 		#discard invalid clicks
@@ -110,11 +85,14 @@ class App():
 
 		#move selected
 		elif not self.is_piece(click_coords) and self._clicked_coord != None:
-			#move only if move is valid
+			#only if move is valid
 			if click_coords in self.get_moves(self._clicked_coord,self._curent_player):
 				self.get_piece(self._clicked_coord).coord = click_coords
 				self.get_piece(click_coords).opacity = 255
 				self._clicked_coord = None
+
+				#temporary
+				self.AI_move()
 
 		#generate ghost pieces
 		self._ghost_pieces = []
@@ -163,3 +141,19 @@ class App():
 
 		return out
 
+
+	"""
+		temporary-- to be replaced by multiplayer turns
+	"""
+	def AI_move(self):
+		moves = []
+
+		#list all possible moves
+		for i in self._pieces:
+			if i.color == "black":
+				for j in self.get_moves(i.coord,"black"):
+					moves.append((i.coord,j))
+
+		#select a random move
+		move = moves[randint(0,len(moves)-1)]
+		self.get_piece(move[0]).coord = move[1]
