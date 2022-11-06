@@ -13,7 +13,7 @@ def on_draw():
 	win.clear()
 
 	back.draw()
-	app.draw_textures(win)
+	app.draw_textures()
 
 @win.event
 def on_resize(width, height):
@@ -41,9 +41,7 @@ if __name__ == '__main__':
 	back.scale = scale
 
 	#load pieces textures
-	textures = {"white":pyglet.resource.image("img/white.png"),
-				"black":pyglet.resource.image("img/black.png"),
-				"selected":pyglet.resource.image("img/Yellow.png")}
+	textures = {"white":pyglet.resource.image("img/white.png"),"black":pyglet.resource.image("img/black.png")}
 
 	#center texture pivot
 	for i in textures.keys():
@@ -51,7 +49,8 @@ if __name__ == '__main__':
 		textures[i].anchor_y = textures[i].height // 2
 
 	#setup board
-	app.set_textures(textures, scale=scale*0.73)
+	app.textures = textures
+	app.scale = scale*0.73
 	app.init_board()
 
 	#launch pyglet app (!= app.py App)

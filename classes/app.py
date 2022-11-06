@@ -8,40 +8,43 @@ class App():
 		---TBD---
 	"""
 	def __init__(self):
+		#pieces
 		self._pieces = [] #list all pieces on the board
-		self._player = 1 #store the current player (1 white| 2 black)
-		self.pause = False #will be used to toggle the pause menu display and deactivate clicking on pieces
-		self._score_P1 = 0 #scoring system TBD
-		self._score_P2 = 0 #scoring system TBD
-		self._clicked_coord = None #value is a (x, y ,z) coords of a selected tile. if selected display possible moves, takes
+		self._ghost_pieces = [] #pieces representing potential moves
 
-		self.valid_moves = [] #coords of valid tiles to move to (depending of selected tile)
-		self.valid_takes = [] #coords of pieces that can be taken (depending of selected tile)
-
-		self.board_size = 8
+		#coords
+		self._clicked_coord = None
 
 		#textures
-		self._textures = {}
+		self.textures = {}
+		self.scale = 1
+		self._select_opacity = 180
 
 		#scaling
 		self._tile_height = 1
 
-	def reset(self):
-		pass
 
-	def set_textures(self, textures, scale=1):
-		self._textures = textures
-		self._scale = scale
-
+	"""
+		recalculate and update all scaling of pieces and distances
+	"""
 	def rescale(self,height):
 		self._tile_height = height / 6.25
 		for i in self._pieces:
 			i.scale = height / 2000
 
-	def draw_textures(self,window):
+
+	"""
+		draw all pieces on the board
+	"""
+	def draw_textures(self):
 		#draw pieces
 		for i in self._pieces:
 			i.draw(self._tile_height)
+
+		#draw ghosts
+		for i in self._ghost_pieces:
+			i.draw(self._tile_height)
+
 
 	"""
 		fill board with pieces at their correct starting positions
@@ -50,17 +53,12 @@ class App():
 		pos = get_starting_pos(8)
 		print(pos)
 		for i in range(len(pos[0])):
-			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="white", texture=self._textures["white"], scale=self._scale))
-			self._pieces.append(Piece(x=pos[1][i][0], y=pos[1][i][1], z=pos[1][i][2], color="black", texture=self._textures["black"], scale=self._scale))
+			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="white", texture=self.textures["white"], scale=self.scale))
+			self._pieces.append(Piece(x=pos[1][i][0], y=pos[1][i][1], z=pos[1][i][2], color="black", texture=self.textures["black"], scale=self.scale))
 
 
 	"""
-		receive coords of a click on screen and takes action on it:
-		- ignore coords out of bounds
-		- translate screen coords to game coords (fcts.py screen_to_board(x,y))
-		- on first click on a tile, hold coords
-		- on second make move if legal
-		- change self.player at the end of the turn(when a move is done)
+		receive coords of a click on screen and takes action on it based on curent game state
 	"""
 	def click(self, screen_x, screen_y):
 		"""coords = screen_to_board(screen_x,screen_y,self._tile_height) # incomplete, needs some tweaks and doesn't work for now
@@ -88,37 +86,30 @@ class App():
 				else:
 					self._player = 1
 				return"""
-
-
-
-
 		
 		click_coords = screen_to_board(screen_x,screen_y,self._tile_height)
 
 		#discard invalid clicks
 		if not validate_click(click_coords):
-			print(click_coords,"is invalid")
 			return
 
 		#select new piece
 		if self.is_pieces(click_coords) and self._clicked_coord == None:
-			print("select")
 			self._clicked_coord = click_coords
-
-		#move selected
-		elif not self.is_pieces(click_coords) and self._clicked_coord != None:
-			print("move")
-			self.move(self._clicked_coord,click_coords)
-			self._clicked_coord = None
+			self.get_piece(self._clicked_coord).opacity = self._select_opacity
 
 		#select other piece
 		elif self.is_pieces(click_coords) and self._clicked_coord != None:
-			print("reselect")
+			self.get_piece(self._clicked_coord).opacity = 255
 			self._clicked_coord = click_coords
+			self.get_piece(self._clicked_coord).opacity = self._select_opacity
 
+		#move selected
+		elif not self.is_pieces(click_coords) and self._clicked_coord != None:
+			self.get_piece(self._clicked_coord).coord = click_coords
+			self.get_piece(click_coords).opacity = 255
+			self._clicked_coord = None
 
-
-		print(click_coords,self._clicked_coord)
 		
 	"""
 		receive coords (x,y,z),
@@ -131,7 +122,13 @@ class App():
 				return True
 		return False
 
-	def move(self,curent,new):
+
+	"""
+		return piece object at given coordonates, none if empty space
+	"""
+	def get_piece(self,coord):
 		for piece in self._pieces:
-			if piece.coord == curent:
-				piece.coord = new
+			if piece.coord == coord:
+				return piece
+
+

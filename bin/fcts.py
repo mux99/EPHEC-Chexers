@@ -20,6 +20,7 @@ def board_to_screen(x, y, z, tile_height):
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
 	return (screen_x,screen_y)
 
+
 """
 generate a list of starting locations for each color
 """
@@ -34,8 +35,8 @@ def get_starting_pos(n):
 		blacks.append((6,-i-3,i-3))
 		blacks.append((7,-i-3,i-4))
 
-
 	return (whites,blacks)
+
 
 """
 	return True if the coordinate are valid, False if not

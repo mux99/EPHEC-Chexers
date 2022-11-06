@@ -69,8 +69,8 @@ class Piece():
 		return self._sprite.scale
 
 	@property
-	def texture(self):
-		return self._sprite.texture
+	def opacity(self):
+		return self._sprite.opacity
 
 	@coord.setter
 	def coord(self, coord):
@@ -82,7 +82,7 @@ class Piece():
 	def scale(self, scale):
 		self._sprite.scale = scale
 
-	@texture.setter
-	def texture(self, texture):
-		self._sprite.texture = texture
+	@opacity.setter
+	def opacity(self, opacity):
+		self._sprite.opacity = opacity
 
