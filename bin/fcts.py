@@ -29,10 +29,10 @@ def get_starting_pos(n):
 
 	for i in range(n):
 		whites.append((0,-i,i))
-		whites.append((1,-i,i))
+		whites.append((1,-i,i-1))
 
-		blacks.append((6,-i-3,i+3))
-		blacks.append((7,-i-3,i+3))
+		blacks.append((6,-i-3,i-3))
+		blacks.append((7,-i-3,i-4))
 
 
 	return (whites,blacks)

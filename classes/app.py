@@ -48,6 +48,7 @@ class App():
 	"""
 	def init_board(self):
 		pos = get_starting_pos(8)
+		print(pos)
 		for i in range(len(pos[0])):
 			self._pieces.append(Piece(x=pos[0][i][0], y=pos[0][i][1], z=pos[0][i][2], color="white", texture=self._textures["white"], scale=self._scale))
 			self._pieces.append(Piece(x=pos[1][i][0], y=pos[1][i][1], z=pos[1][i][2], color="black", texture=self._textures["black"], scale=self._scale))
