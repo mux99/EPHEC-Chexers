@@ -83,20 +83,12 @@ def validate_click(coords):
 		return False
 	match x:
 		case 0 | 1:
-			if -7 <= y <= 0:
-				return True
-			return False
+			return -7 <= y <= 0
 		case 2 | 3:
-			if -8 <= y <= -1:
-				return True
-			return False
+			return -8 <= y <= -1
 		case 4 | 5:
-			if -9 <= y <= -2:
-				return True
-			return False
+			return -9 <= y <= -2
 		case 6 | 7:
-			if -10 <= y <= -3:
-				return True
-			return False
+			return -10 <= y <= -3
 		case other:
 			return False

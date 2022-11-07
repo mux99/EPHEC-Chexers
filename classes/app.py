@@ -207,5 +207,8 @@ class App():
 					moves.append((i.coord,j))
 
 		#select a random move
-		move = moves[randint(0,len(moves)-1)]
-		self.get_piece(move[0]).coord = move[1]
+		try:
+			move = moves[randint(0,len(moves)-1)]
+			self.get_piece(move[0]).coord = move[1]
+		except ValueError:
+			return
