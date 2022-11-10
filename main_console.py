@@ -43,8 +43,12 @@ if __name__ == '__main__':
 
 				#remove taken pieces
 				for i in app._possible_takes:
-					app.take_piece(i)
-					app._possible_takes = []
+					for j in range(len(app._pieces)):
+						if app._pieces[j].coord == i:
+							print(F"you have taken {i}")
+							app._possible_takes = []
+							del app._pieces[j]
+							break
 
 		#update gamestate
 		if app._clicked_coord != None:
