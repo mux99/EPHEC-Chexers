@@ -223,8 +223,6 @@ class App():
 		move = moves[randint(0,len(moves)-1)]
 		if len(moves) > 0:
 			self.get_piece(move[0]).coord = move[1]
-		except ValueError:
-			return
 
 	def finish_game(self):
 		string = self.__str__()
