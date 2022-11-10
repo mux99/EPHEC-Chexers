@@ -1,4 +1,5 @@
 from classes.app import App
+import bin.fcts as fcts
 
 app = App()
 
@@ -10,10 +11,14 @@ if __name__ == '__main__':
 		print(app)
 		try:
 			if app._clicked_coord == None:
-				tmp = input("enter a coordonate to select a piece [x,y,z]").split(",")
+				tmp = input("enter a coordonate to select a piece [x,y,z], type quit to exit: ").split(",")
+				if tmp == ["quit"]:
+					break
 				click_coords = (int(tmp[0]),int(tmp[1]),int(tmp[2]))
 			else:
-				tmp = input("enter a coordonate to move to [x,y,z]").split(",")
+				tmp = input("enter a coordonate to move to [x,y,z]: ").split(",")
+				if tmp == ["quit"]:
+					break
 				click_coords = (int(tmp[0]),int(tmp[1]),int(tmp[2]))
 		except:
 			pass
@@ -27,6 +32,7 @@ if __name__ == '__main__':
 			app._clicked_coord = click_coords
 			print("you have selected:",click_coords)
 			app._possible_moves = app.get_moves(app._clicked_coord,app._curent_player)
+			print(F"Possible moves {app._possible_moves}")
 
 		#move selected
 		elif not app.is_piece(click_coords) and app._clicked_coord != None:
@@ -42,10 +48,6 @@ if __name__ == '__main__':
 
 		#update gamestate
 		if app._clicked_coord != None:
-			#generate ghost pieces
-			for i in app._possible_moves:
-				tmp = Piece(texture=app.textures[app._curent_player],scale=app._scale)
-				tmp.coord = i
 
 			#mark new takes
 			app._possible_takes = app.get_takes(app._clicked_coord,app._curent_player)
@@ -53,3 +55,5 @@ if __name__ == '__main__':
 		#AT temporary
 		if app._clicked_coord == None:
 			app.AI_move()
+		if app.finish_game():
+			break

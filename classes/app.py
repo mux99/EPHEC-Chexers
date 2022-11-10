@@ -1,5 +1,6 @@
 import bin.fcts as fcts
 from classes.piece import Piece
+import re
 
 from random import randint
 import pyglet
@@ -215,3 +216,10 @@ class App():
 			self.get_piece(move[0]).coord = move[1]
 		except ValueError:
 			return
+
+	def finish_game(self):
+		string = self.__str__()
+		if len(re.findall("white", string)) == 0 or len(re.findall("black", string)) == 0:
+			return True
+		return False
+
