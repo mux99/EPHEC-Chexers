@@ -95,5 +95,8 @@ class Piece():
 	def color(self, color):
 		self._sprite.color = color
 
+	def delete(self):
+		self._sprite.delete()
+
 
 

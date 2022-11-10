@@ -152,11 +152,13 @@ class App():
 	"""
 	def take_piece(self,coord):
 		print(len(self._pieces))
-		for i in range(len(self._pieces)-1):
+		for i in range(len(self._pieces)):
 			print(i)
 			if self._pieces[i].coord == coord:
-				self._pieces.pop(i)
-
+				self._pieces[i].delete()
+				#self._pieces.pop(i)
+				del self._pieces[i]
+				break
 
 	"""
 	"""
