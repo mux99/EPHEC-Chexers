@@ -12,14 +12,15 @@ class Piece():
 		self._player = player
 		self._promotion = False
 
-		self._sprite = pyglet.sprite.Sprite(texture,0,0)
-		self._sprite.scale = scale
+		if texture != None:
+			self._sprite = pyglet.sprite.Sprite(texture,0,0)
+			self._sprite.scale = scale
 
 	def __repr__(self):
 		return str(self)
 
 	def __str__(self):
-		return f"({self._x},{self._y},{self._z})"
+		return f"{self._player}:({self._x},{self._y},{self._z})"
 
 
 	"""

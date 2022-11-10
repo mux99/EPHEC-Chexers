@@ -21,7 +21,7 @@ class App():
 		self._possible_moves = []
 
 		#textures
-		self.textures = {}
+		self.textures = {"black":None,"white":None}
 		self._scale = 1
 		self._select_opacity = 180
 
@@ -30,7 +30,7 @@ class App():
 
 
 	def __str__(self):
-		return f"player:{self._curent_player}\nboard:{self._pieces}\nghosts:{self._ghost_pieces}\nclick:{self._clicked_coord}\ntakes:{self._possible_takes}\nmoves:{self._possible_moves}"
+		return f"player:{self._curent_player}\nboard:{self._pieces}"
 
 
 	"""
@@ -161,6 +161,7 @@ class App():
 				break
 
 	"""
+
 	"""
 	def get_takes(self,coord,player):
 		out = []
