@@ -92,3 +92,17 @@ def validate_click(coords):
 			return -10 <= y <= -3
 		case other:
 			return False
+
+"""
+if the parameter is the coordinates of a teleportation tile return the coordinates of the destination
+else return the parameter
+"""
+def teleport(cords):
+    left = [(0,1,-1),(1,1,-2),(2,0,-2),(3,0,-3),(4,-1,-3),(5,-1,-4),(6,-2,-4),(7,-2,-5)]
+    right = [(0,-8,8),(1,-8,7),(2,-9,7),(3,-9,6),(4,-10,6),(5,-10,5),(6,-11,5),(7,-11,4)]
+    if cords in left:
+        return (cords[0],cords[1]-8,cords[2]+8)
+    elif cords in right:
+        return (cords[0],cords[1]+8,cords[2]-8)
+    else:
+        return cords
