@@ -10,7 +10,7 @@ class App():
 		---TBD---
 	"""
 	def __init__(self):
-		self._curent_player = "white"
+		self._current_player = "white"
 
 		#pieces
 		self._pieces = [] #list all pieces on the board
@@ -31,7 +31,7 @@ class App():
 
 
 	def __str__(self):
-		return f"player:{self._curent_player}\nboard:{self._pieces}"
+		return f"player:{self._current_player}\nboard:{self._pieces}"
 
 
 	"""
@@ -81,14 +81,14 @@ class App():
 			return
 
 		#select piece
-		if self.is_piece(click_coords) and self.get_piece(click_coords).player == self._curent_player:
+		if self.is_piece(click_coords) and self.get_piece(click_coords).player == self._current_player:
 			if self._clicked_coord != None:
 				self.get_piece(self._clicked_coord).opacity = 255
 
 			self._clicked_coord = click_coords
 			self.get_piece(self._clicked_coord).opacity = self._select_opacity
 
-			self._possible_moves = self.get_moves(self._clicked_coord,self._curent_player)
+			self._possible_moves = self.get_moves(self._clicked_coord,self._current_player)
 
 		#move selected
 		elif not self.is_piece(click_coords) and self._clicked_coord != None:
@@ -99,7 +99,7 @@ class App():
 				self._clicked_coord = None
 
 				#remove taken pieces
-				for i in self._possible_takes:
+				for i in self.get_takes(self._clicked_coord,click_coords,self._current_player):
 					self.take_piece(i)
 				self._possible_takes = []
 
@@ -108,7 +108,7 @@ class App():
 		if self._clicked_coord != None:
 			#generate ghost pieces
 			for i in self._possible_moves:
-				tmp = Piece(texture=self.textures[self._curent_player],scale=self._scale)
+				tmp = Piece(texture=self.textures[self._current_player],scale=self._scale)
 				tmp.coord = i
 				tmp.opacity = 150
 				self._ghost_pieces.append(tmp)
@@ -118,15 +118,13 @@ class App():
 				self.get_piece(i).opacity = 255
 
 			#mark new takes
-			self._possible_takes = self.get_takes(self._clicked_coord,self._curent_player)
+			self._possible_takes = self.get_all_takes(self._clicked_coord,self._current_player)
 			for i in self._possible_takes:
 				self.get_piece(i).opacity = 200
 
 		#AT temporary
 		if self._clicked_coord == None:
 			self.AI_move()
-
-		print(self)
 		
 	"""
 		receive coords (x,y,z),
@@ -161,10 +159,22 @@ class App():
 				del self._pieces[i]
 				break
 
-	"""
 
 	"""
-	def get_takes(self,coord,player):
+		list takes for all possible moves
+	"""
+	def get_all_takes(self,coord,player):
+		out = []
+		for i in self.get_moves(coord,player):
+			out += self.get_takes(coord,i,player)
+
+		return list(dict.fromkeys(out))
+
+
+	"""
+		list all takes for given moves
+	"""
+	def get_takes(self,coord,coord_2,player):
 		out = []
 		valid_takes = {(2,-1,-1):[(1,0,-1),(1,-1,0)],
 						(1,-2,1):[(1,-1,0),(0,-1,1)],
@@ -173,12 +183,11 @@ class App():
 						(-1,2,-1):[(-1,1,0),(0,1,-1)],
 						(1,1,-2):[(0,1,-1),(1,0,-1)]}
 
-		for i in self.get_moves(coord,player):
-			for j in valid_takes[fcts.vector_sub(i,coord)]:
-				tmp = fcts.vector_add(coord,j)
+		for i in valid_takes[fcts.vector_sub(coord,coord_2)]:
+				tmp = fcts.vector_add(coord,i)
 				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-					out.append(fcts.vector_add(coord,j))
-		return list(dict.fromkeys(out))
+					out.append(tmp)
+		return out
 
 
 	"""
@@ -211,8 +220,8 @@ class App():
 					moves.append((i.coord,j))
 
 		#select a random move
-		try:
-			move = moves[randint(0,len(moves)-1)]
+		move = moves[randint(0,len(moves)-1)]
+		if len(moves) > 0:
 			self.get_piece(move[0]).coord = move[1]
 		except ValueError:
 			return
