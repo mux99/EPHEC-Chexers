@@ -84,6 +84,9 @@ class App():
 		if self.is_piece(click_coords) and self.get_piece(click_coords).player == self._current_player:
 			if self._clicked_coord != None:
 				self.get_piece(self._clicked_coord).opacity = 255
+				#remove previous takes
+				for i in self._possible_takes:
+					self.get_piece(i).opacity = 255
 
 			self._clicked_coord = click_coords
 			self.get_piece(self._clicked_coord).opacity = self._select_opacity
@@ -94,14 +97,18 @@ class App():
 		elif not self.is_piece(click_coords) and self._clicked_coord != None:
 			#only if move is valid
 			if click_coords in self._possible_moves:
-				self.get_piece(self._clicked_coord).coord = click_coords
-				self.get_piece(click_coords).opacity = 255
-
 				#remove taken pieces
 				for i in self.get_takes(self._clicked_coord,click_coords,self._current_player):
 					self.take_piece(i)
-				self._possible_takes = []
+
+				#move player
+				self.get_piece(self._clicked_coord).coord = click_coords
+				self.get_piece(click_coords).opacity = 255
 				self._clicked_coord = None
+
+		#remove previous takes
+		for i in self._possible_takes:
+			self.get_piece(i).opacity = 255
 
 		#update gamestate
 		self._ghost_pieces = []
@@ -113,14 +120,13 @@ class App():
 				tmp.opacity = 150
 				self._ghost_pieces.append(tmp)
 
-			#remove previous takes
-			for i in self._possible_takes:
-				self.get_piece(i).opacity = 255
-
 			#mark new takes
 			self._possible_takes = self.get_all_takes(self._clicked_coord,self._current_player)
 			for i in self._possible_takes:
 				self.get_piece(i).opacity = 200
+
+		if self._clicked_coord == None:
+			self._possible_takes = []
 
 		#AT temporary
 		if self._clicked_coord == None:
@@ -150,12 +156,9 @@ class App():
 	"""
 	"""
 	def take_piece(self,coord):
-		print(len(self._pieces))
 		for i in range(len(self._pieces)):
-			print(i)
 			if self._pieces[i].coord == coord:
 				self._pieces[i].delete()
-				#self._pieces.pop(i)
 				del self._pieces[i]
 				break
 
@@ -167,7 +170,6 @@ class App():
 		out = []
 		for i in self.get_moves(coord,player):
 			out += self.get_takes(coord,i,player)
-
 		return list(dict.fromkeys(out))
 
 
@@ -183,7 +185,7 @@ class App():
 						(-1,2,-1):[(-1,1,0),(0,1,-1)],
 						(1,1,-2):[(0,1,-1),(1,0,-1)]}
 
-		for i in valid_takes[fcts.vector_sub(coord,coord_2)]:
+		for i in valid_takes[fcts.vector_sub(coord_2,coord)]:
 			tmp = fcts.vector_add(coord,i)
 			if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
 				out.append(tmp)
@@ -201,7 +203,6 @@ class App():
 		#forward moves
 		for i in valid_moves[player]:
 			tmp = fcts.vector_add(coord,i)
-			print(tmp)
 			if not self.is_piece(tmp) and fcts.validate_click(tmp):
 				out.append(tmp)
 
@@ -223,6 +224,8 @@ class App():
 		#select a random move
 		move = moves[randint(0,len(moves)-1)]
 		if len(moves) > 0:
+			for i in self.get_takes(move[0],move[1],"black"):
+				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
 
 	def finish_game(self):
