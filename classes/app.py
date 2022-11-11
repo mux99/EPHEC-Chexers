@@ -308,8 +308,8 @@ class App():
 					moves.append((i.coord,j))
 
 		#select a random move
-		move = moves[randint(0,len(moves)-1)]
 		if len(moves) > 0:
+			move = moves[randint(0,len(moves)-1)]
 			for i in self.get_takes(move[0],move[1],"black"):
 				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
