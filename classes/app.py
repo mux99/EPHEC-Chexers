@@ -233,11 +233,18 @@ class App():
 		out = []
 		valid_moves = {"white":[(2,-1,-1),(1,-2,1),(1,1,-2)],
 						"black":[(-2,1,1),(-1,2,-1),(-1,-1,2)]}
+		valid_back_moves = {"white":[(-1,2,-1),(-1,-1,2)],"black":[(1,1,-2),(1,-2,1)]}
 
 		#forward moves
 		for i in valid_moves[player]:
 			tmp = fcts.vector_add(coord,i)
 			if not self.is_piece(tmp) and fcts.validate_click(tmp):
+				out.append(tmp)
+
+		#back takes
+		for i in valid_back_moves[player]:
+			tmp = fcts.vector_add(coord,i)
+			if not self.is_piece(tmp) and fcts.validate_click(tmp) and len(self.get_takes(coord,tmp,player)) != 0:
 				out.append(tmp)
 
 		return out
