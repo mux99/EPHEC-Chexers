@@ -5,7 +5,7 @@ class Piece():
 	"""
 	class of a piece of checkers (on hexagonal tiled board)
 	"""
-	def __init__(self, coord=(0,0,0), player="White", texture=None, scale = 1):
+	def __init__(self, coord=(0,0,0), player="White", texture=None, texture2=None, scale = 1):
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
@@ -15,6 +15,9 @@ class Piece():
 		if texture != None:
 			self._sprite = pyglet.sprite.Sprite(texture,0,0)
 			self._sprite.scale = scale
+		if texture2 != None:
+			self._promotion_texture = texture2
+
 
 	def __repr__(self):
 		return str(self)
@@ -27,7 +30,11 @@ class Piece():
 		promotion of piece to king
 	"""
 	def promote(self):
+		print("promote")
+		tmp = self._sprite.scale
 		self._promotion = True
+		self._sprite = pyglet.sprite.Sprite(self._promotion_texture,0,0)
+		self._sprite.scale = tmp
 
 
 	"""

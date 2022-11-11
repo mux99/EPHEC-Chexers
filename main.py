@@ -12,7 +12,6 @@ app = App()
 @win.event
 def on_draw():
 	win.clear()
-
 	back.draw()
 	app.draw_textures()
 
@@ -44,7 +43,10 @@ if __name__ == '__main__':
 	back.scale = scale
 
 	#load pieces textures
-	textures = {"white":pyglet.resource.image("img/white.png"),"black":pyglet.resource.image("img/black.png")}
+	textures = {"white":pyglet.resource.image("img/white.png"),
+				"black":pyglet.resource.image("img/black.png"),
+				"white_queen":pyglet.resource.image("img/white_queen.png"),
+				"black_queen":pyglet.resource.image("img/black_queen.png")}
 
 	#center texture pivot
 	for i in textures.keys():

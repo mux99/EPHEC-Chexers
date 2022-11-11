@@ -66,8 +66,10 @@ class App():
 	def init_board(self):
 		pos = fcts.get_starting_pos(8)
 		for i in range(len(pos[0])):
-			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"], scale=self._scale))
-			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"], scale=self._scale))
+			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"],
+				texture2=self.textures["white_queen"] ,scale=self._scale))
+			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"],
+				texture2=self.textures["black_queen"], scale=self._scale))
 
 	"""
 		change the piece selected based on games state and click coordonates
@@ -109,7 +111,8 @@ class App():
 		for i in self._possible_takes:
 			try:
 				self.get_piece(i).opacity = 255
-			except:
+			except AttributeError:
+				#the piece dosn't exist anymore (killed)
 				pass
 
 		#update gamestate
@@ -132,6 +135,19 @@ class App():
 
 
 	"""
+		promote all pieces coresponding to criteria
+	"""
+	def promotion(self):
+		for i in self._pieces:
+			if not i.promotion and i.player == "white":
+				if i.coord[0] == 7:
+					i.promote()
+			elif not i.promotion and i.player == "black":
+				if i.coord[0] == 0:
+					i.promote()
+
+
+	"""
 		receive coords of a click on screen and takes action on it based on curent game state
 	"""
 	def click(self, screen_x, screen_y):
@@ -144,6 +160,7 @@ class App():
 		self.select(click_coords)
 		self.move(click_coords)
 		self.update(click_coords)
+		self.promotion()
 
 		#AT temporary
 		if self._clicked_coord == None:
