@@ -314,9 +314,3 @@ class App():
 				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
 
-	def finish_game(self):
-		string = self.__str__()
-		if len(re.findall("white", string)) == 0 or len(re.findall("black", string)) == 0:
-			return True
-		return False
-
