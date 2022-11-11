@@ -37,7 +37,7 @@ def update(dt):
 
 if __name__ == '__main__':
 	#add background
-	back_img = pyglet.resource.image("img/pixel_perfect_board.png")
+	back_img = pyglet.resource.image("img/board.png")
 	back = pyglet.sprite.Sprite(back_img,0,0)
 	scale = win.get_size()[1] / back_img.height
 	back.scale = scale
