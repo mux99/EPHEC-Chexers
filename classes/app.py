@@ -96,12 +96,12 @@ class App():
 			if click_coords in self._possible_moves:
 				self.get_piece(self._clicked_coord).coord = click_coords
 				self.get_piece(click_coords).opacity = 255
-				self._clicked_coord = None
 
 				#remove taken pieces
 				for i in self.get_takes(self._clicked_coord,click_coords,self._current_player):
 					self.take_piece(i)
 				self._possible_takes = []
+				self._clicked_coord = None
 
 		#update gamestate
 		self._ghost_pieces = []
@@ -184,9 +184,9 @@ class App():
 						(1,1,-2):[(0,1,-1),(1,0,-1)]}
 
 		for i in valid_takes[fcts.vector_sub(coord,coord_2)]:
-				tmp = fcts.vector_add(coord,i)
-				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-					out.append(tmp)
+			tmp = fcts.vector_add(coord,i)
+			if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
+				out.append(tmp)
 		return out
 
 
@@ -200,7 +200,8 @@ class App():
 
 		#forward moves
 		for i in valid_moves[player]:
-			tmp = fcts.vector_add(i,coord)
+			tmp = fcts.vector_add(coord,i)
+			print(tmp)
 			if not self.is_piece(tmp) and fcts.validate_click(tmp):
 				out.append(tmp)
 
