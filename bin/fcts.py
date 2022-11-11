@@ -81,17 +81,17 @@ def validate_click(coords):
 	if (x + y + z) != 0:
 		print("Illegal Coordinates")
 		return False
-	match x:
-		case 0 | 1:
-			return -7 <= y <= 0
-		case 2 | 3:
-			return -8 <= y <= -1
-		case 4 | 5:
-			return -9 <= y <= -2
-		case 6 | 7:
-			return -10 <= y <= -3
-		case other:
-			return False
+
+	if x in (0,1):
+		return -7 <= y <= 0
+	elif x in (2,3):
+		return -8 <= y <= -1
+	elif x in (4,5):
+		return -9 <= y <= -2
+	elif x in (6,7):
+		return -10 <= y <= -3
+	else:
+		return False
 
 """
 if the parameter is the coordinates of a teleportation tile return the coordinates of the destination
