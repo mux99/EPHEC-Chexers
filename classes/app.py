@@ -39,7 +39,7 @@ class App():
 	"""
 	def rescale(self,height):
 		self._tile_height = height / 6.25
-		self._scale = height / 2000
+		self._scale = height / 2600
 		for i in self._pieces:
 			i.scale = self._scale
 
@@ -69,18 +69,10 @@ class App():
 			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"], scale=self._scale))
 			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"], scale=self._scale))
 
-
 	"""
-		receive coords of a click on screen and takes action on it based on curent game state
+		change the piece selected based on games state and click coordonates
 	"""
-	def click(self, screen_x, screen_y):
-		click_coords = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
-
-		#discard invalid clicks
-		if not fcts.validate_click(click_coords):
-			return
-
-		#select piece
+	def select(self, click_coords):
 		if self.is_piece(click_coords) and self.get_piece(click_coords).player == self._current_player:
 			if self._clicked_coord != None:
 				self.get_piece(self._clicked_coord).opacity = 255
@@ -93,8 +85,11 @@ class App():
 
 			self._possible_moves = self.get_moves(self._clicked_coord,self._current_player)
 
-		#move selected
-		elif not self.is_piece(click_coords) and self._clicked_coord != None:
+
+	"""
+	"""
+	def move(self, click_coords):
+		if not self.is_piece(click_coords) and self._clicked_coord != None:
 			#only if move is valid
 			if click_coords in self._possible_moves:
 				#remove taken pieces
@@ -104,11 +99,18 @@ class App():
 				#move player
 				self.get_piece(self._clicked_coord).coord = click_coords
 				self.get_piece(click_coords).opacity = 255
-				self._clicked_coord = None
+				self._clicked_coord = None		
 
+
+	"""
+	"""
+	def update(self, click_coords):
 		#remove previous takes
 		for i in self._possible_takes:
-			self.get_piece(i).opacity = 255
+			try:
+				self.get_piece(i).opacity = 255
+			except:
+				pass
 
 		#update gamestate
 		self._ghost_pieces = []
@@ -127,6 +129,21 @@ class App():
 
 		if self._clicked_coord == None:
 			self._possible_takes = []
+
+
+	"""
+		receive coords of a click on screen and takes action on it based on curent game state
+	"""
+	def click(self, screen_x, screen_y):
+		click_coords = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
+
+		#discard invalid clicks
+		if not fcts.validate_click(click_coords):
+			return
+
+		self.select(click_coords)
+		self.move(click_coords)
+		self.update(click_coords)
 
 		#AT temporary
 		if self._clicked_coord == None:
