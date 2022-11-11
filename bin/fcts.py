@@ -25,6 +25,13 @@ def vector_add(vector1, vector2):
 def vector_sub(vector1, vector2):
 	return (vector1[0]-vector2[0],vector1[1]-vector2[1],vector1[2]-vector2[2])
 
+"""
+"""
+def vector_cross_product(a, b):
+    return (a[1]*b[2] - a[2]*b[1],
+         a[2]*b[0] - a[0]*b[2],
+         a[0]*b[1] - a[1]*b[0])
+    
 
 """
 	return the oposite player
@@ -73,7 +80,7 @@ def get_starting_pos(n):
 	can't really check that without a big match statement with hardcoded values or lots of ifs :/
 	works at least i guess ¯\_(ツ)_/¯ 
 """
-def validate_click(coords):
+def validate_coords(coords):
 	x = coords[0]
 	y = coords[1]
 	z = coords[2]
