@@ -191,7 +191,11 @@ class App(GameLogic):
 		#list all possible moves
 		for i in self._pieces:
 			if i.player == "black":
-				for j in self.get_moves(i.coord,"black"):
+				if i.promotion:
+					potetial_moves = self.get_moves_queen(i.coord,"black")
+				else:
+					potetial_moves = self.get_moves(i.coord,"black")
+				for j in potetial_moves:
 					moves.append((i.coord,j))
 
 		#select a random move

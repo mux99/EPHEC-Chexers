@@ -126,3 +126,5 @@ dmypy.json
 classes/App.py
 
 classes/Piece.py
+
+.vscode/
