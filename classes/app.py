@@ -1,12 +1,13 @@
 import bin.fcts as fcts
 from classes.piece import Piece
+from classes.game_logic import GameLogic
 import re
 from time import sleep
 
 from random import randint
 import pyglet
 
-class App():
+class App(GameLogic):
 	"""
 		---TBD---
 	"""
@@ -18,7 +19,7 @@ class App():
 		self._ghost_pieces = [] #pieces representing potential moves
 
 		#coords
-		self._clicked_coord = None
+		self._last_click = None
 		self._possible_takes = []
 		self._possible_moves = []
 
@@ -75,48 +76,48 @@ class App():
 	"""
 		change the piece selected based on games state and click coordonates
 	"""
-	def select(self, click_coords):
+	def select(self, new_click):
 		#click must be on a piece possessed by curent player
-		if not self.is_piece(click_coords) or self.get_piece(click_coords).player != self._current_player:
+		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
 			return
 
 		#something was already selected
-		if self._clicked_coord != None:
-			self.get_piece(self._clicked_coord).opacity = 255
+		if self._last_click != None:
+			self.get_piece(self._last_click).opacity = 255
 			#remove previous takes
 			for i in self._possible_takes:
 				self.get_piece(i).opacity = 255
 
 		#select new piece
-		self._clicked_coord = click_coords
-		self.get_piece(self._clicked_coord).opacity = self._select_opacity
+		self._last_click = new_click
+		self.get_piece(self._last_click).opacity = self._select_opacity
 
-		if self.get_piece(self._clicked_coord).promotion:
-			self._possible_moves = self.get_moves_queen(self._clicked_coord,self._current_player)
+		if self.get_piece(self._last_click).promotion:
+			self._possible_moves = self.get_moves_queen(self._last_click,self._current_player)
 		else:
-			self._possible_moves = self.get_moves(self._clicked_coord,self._current_player)
+			self._possible_moves = self.get_moves(self._last_click,self._current_player)
 
 
 	"""
 		move selected piece so clicked location (if valid)
 	"""
-	def move(self, click_coords):
-		if not self.is_piece(click_coords) and self._clicked_coord != None:
+	def move(self, new_click):
+		if not self.is_piece(new_click) and self._last_click != None:
 			#only if move is valid
-			if click_coords in self._possible_moves:
+			if new_click in self._possible_moves:
 				#remove taken pieces
-				for i in self.get_takes(self._clicked_coord,click_coords,self._current_player):
+				for i in self.get_takes(self._last_click,new_click,self._current_player):
 					self.take_piece(i)
 
 				#move player
-				self.get_piece(self._clicked_coord).coord = click_coords
-				self.get_piece(click_coords).opacity = 255
-				self._clicked_coord = None	
+				self.get_piece(self._last_click).coord = new_click
+				self.get_piece(new_click).opacity = 255
+				self._last_click = None	
 
 
 	"""
 	"""
-	def update(self, click_coords):
+	def update(self, new_click):
 		#remove previous takes
 		for i in self._possible_takes:
 			try:
@@ -127,7 +128,7 @@ class App():
 
 		#update gamestate
 		self._ghost_pieces = []
-		if self._clicked_coord != None:
+		if self._last_click != None:
 			#generate ghost pieces
 			for i in self._possible_moves:
 				tmp = Piece(texture=self.textures[self._current_player],scale=self._scale)
@@ -136,11 +137,11 @@ class App():
 				self._ghost_pieces.append(tmp)
 
 			#mark new takes
-			self._possible_takes = self.get_all_takes(self._clicked_coord,self._current_player)
+			self._possible_takes = self.get_all_takes(self._last_click,self._current_player)
 			for i in self._possible_takes:
 				self.get_piece(i).opacity = 200
 
-		if self._clicked_coord == None:
+		if self._last_click == None:
 			self._possible_takes = []
 
 
@@ -161,142 +162,28 @@ class App():
 		receive coords of a click on screen and takes action on it based on curent game state
 	"""
 	def click(self, screen_x, screen_y):
-		click_coords = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
+		new_click = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
 
 		#discard invalid clicks
-		if not fcts.validate_coords(click_coords):
+		if not fcts.validate_coords(new_click):
 			return
 
 		#discard click twice
-		if self._clicked_coord == click_coords:
+		if self._last_click == new_click:
 			return
 
-		self.select(click_coords)
-		self.move(click_coords)
-		self.update(click_coords)
+		self.select(new_click)
+		self.move(new_click)
+		self.update(new_click)
 		self.promotion()
-		
-	"""
-		receive coords (x,y,z),
-		returns a boolean:
-		True if a piece is in that place, False otherwise
-	"""
-	def is_piece(self, coord):
-		for piece in self._pieces:
-			if coord == piece.coord:
-				return True
-		return False
 
-
-	"""
-		return piece object at given coordonates, none if empty space
-	"""
-	def get_piece(self,coord):
-		for piece in self._pieces:
-			if piece.coord == coord:
-				return piece
-
-
-	"""
-	"""
-	def take_piece(self,coord):
-		for i in range(len(self._pieces)):
-			if self._pieces[i].coord == coord:
-				self._pieces[i].delete()
-				del self._pieces[i]
-				break
-
-
-	"""
-		list takes for all possible moves
-	"""
-	def get_all_takes(self,coord,player):
-		out = []
-		if self.get_piece(self._clicked_coord).promotion:
-			moves = self.get_moves_queen(coord,player)
-		else:
-			moves = self.get_moves(coord,player)
-
-		for i in moves:
-			out += self.get_takes(coord,i,player)
-		return list(dict.fromkeys(out))
-
-
-	"""
-		list all takes for given moves
-	"""
-	def get_takes(self,coord,coord_2,player):
-		out = []
-		valid_takes = {(2,-1,-1):[(-1,0,1),(-1,1,0)],
-						(1,-2,1):[(-1,1,0),(0,1,-1)],
-						(-1,-1,2):[(0,1,-1),(1,0,-1)],
-						(-2,1,1):[(1,0,-1),(1,-1,0)],
-						(-1,2,-1):[(1,-1,0),(0,-1,1)],
-						(1,1,-2):[(0,-1,1),(-1,0,1)]}
-
-		move = fcts.vector_sub(coord_2,coord)
-
-		#fix for longer move vectors
-		if not move in valid_takes.keys():
-			for i in valid_takes.keys():
-				print(move,i,fcts.vector_cross_product(move,i))
-				if fcts.vector_cross_product(move,i) == (0,0,0):
-					move = i
-					break
-
-		#list takes
-		for i in valid_takes[move]:
-			tmp = fcts.vector_add(coord_2,i)
-			if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-				out.append(tmp)
-		return out
-
-
-	"""
-		return all coords of valid move from given coord
-	"""
-	def get_moves(self,coord,player):
-		out = []
-		valid_moves = {"white":[(2,-1,-1),(1,-2,1),(1,1,-2)],
-						"black":[(-2,1,1),(-1,2,-1),(-1,-1,2)]}
-		valid_back_moves = {"white":[(-1,2,-1),(-1,-1,2)],"black":[(1,1,-2),(1,-2,1)]}
-
-		#forward moves
-		for i in valid_moves[player]:
-			tmp = fcts.vector_add(coord,i)
-			if not self.is_piece(tmp) and fcts.validate_coords(tmp):
-				out.append(tmp)
-
-		#back takes
-		for i in valid_back_moves[player]:
-			tmp = fcts.vector_add(coord,i)
-			if not self.is_piece(tmp) and fcts.validate_coords(tmp) and len(self.get_takes(coord,tmp,player)) != 0:
-				out.append(tmp)
-
-		return out
-
-
-	"""
-		return coords of valid moves form given coord for queen (promoted pieces)
-	"""
-	def get_moves_queen(self,coord,player):
-		out = []
-		valid_moves = [(2,-1,-1),(1,-2,1),(1,1,-2),(-1,2,-1),(-2,1,1),(-1,-1,2)]
-		
-		for i in valid_moves:
-			tmp = fcts.vector_add(coord,i)
-			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
-				out.append(tmp)
-				tmp = fcts.vector_add(tmp,i)
-
-		return out
 
 
 	"""
 		temporary-- to be replaced by multiplayer turns
 	"""
 	def AI_move(self):
-		if self._clicked_coord != None:
+		if self._last_click != None:
 			return
 
 		moves = []
