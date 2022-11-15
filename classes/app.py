@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
+from time import time
 
 from random import randint
 import pyglet
@@ -12,7 +13,8 @@ class App(GameLogic):
 	"""
 	def __init__(self):
 		self._current_player = "white"
-		self._player_scores = []  # 0 is white, 1 is black
+		self._player_scores = {"white": 0, "black": 0}
+		self._winner = None
 
 		# pieces
 		self._pieces = []  # list all pieces on the board
@@ -20,6 +22,7 @@ class App(GameLogic):
 
 		# coords
 		self._last_click = None
+		self._last_click_time = 0
 		self._possible_takes = []
 		self._possible_moves = []
 
@@ -34,10 +37,10 @@ class App(GameLogic):
 	def __str__(self):
 		return f"player:{self._current_player}\nboard:{self._pieces}"
 
-	"""
-		recalculate and update all scaling of pieces and distances
-	"""
-	def rescale(self,height):
+	def rescale(self, height):
+		"""
+			recalculate and update all scaling of pieces and distances
+		"""
 		self._tile_height = height / 6.25
 		self._scale = height / 2600
 		for i in self._pieces:
@@ -46,10 +49,10 @@ class App(GameLogic):
 		for i in self._ghost_pieces:
 			i.scale = self._scale
 
-	"""
-		draw all pieces on the board
-	"""
 	def draw_textures(self):
+		"""
+			draw all pieces on the board
+		"""
 		# draw pieces
 		for i in self._pieces:
 			i.draw(self._tile_height)
@@ -58,21 +61,21 @@ class App(GameLogic):
 		for i in self._ghost_pieces:
 			i.draw(self._tile_height)
 
-	"""
-		fill board with pieces at their correct starting positions
-	"""
 	def init_board(self):
+		"""
+			fill board with pieces at their correct starting positions
+		"""
 		pos = fcts.get_starting_pos(8)
 		for i in range(len(pos[0])):
 			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"],
-				texture2=self.textures["white_queen"] ,scale=self._scale))
+				texture2 = self.textures["white_queen"] ,scale=self._scale))
 			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"],
-				texture2=self.textures["black_queen"], scale=self._scale))
+				texture2 = self.textures["black_queen"], scale=self._scale))
 
-	"""
-		change the piece selected based on games state and click coordonates
-	"""
 	def select(self, new_click):
+		"""
+			change the piece selected based on games state and click coordonates
+		"""
 		# click must be on a piece possessed by curent player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
 			return
@@ -86,6 +89,7 @@ class App(GameLogic):
 
 		# select new piece
 		self._last_click = new_click
+		self._last_click_time = time()
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
 		if self.get_piece(self._last_click).promotion:
@@ -93,16 +97,20 @@ class App(GameLogic):
 		else:
 			self._possible_moves = self.get_moves(self._last_click,self._current_player)
 
-	"""
-		move selected piece so clicked location (if valid)
-	"""
 	def move(self, new_click):
+		"""
+			move selected piece so clicked location (if valid)
+		"""
 		if not self.is_piece(new_click) and self._last_click is not None:
 			# only if move is valid
 			if new_click in self._possible_moves:
 				# remove taken pieces
+				taken_pieces = 0
 				for i in self.get_takes(self._last_click, new_click, self._current_player):
+					taken_pieces += 1
 					self.take_piece(i)
+				if taken_pieces > 0:
+					self._player_scores[self._current_player] += fcts.takes_score(taken_pieces)
 
 				# move player
 				self.get_piece(self._last_click).coord = new_click
@@ -118,7 +126,7 @@ class App(GameLogic):
 			try:
 				self.get_piece(i).opacity = 255
 			except AttributeError:
-				# the piece dosn't exist anymore (killed)
+				# the piece doesn't exist anymore (killed)
 				pass
 
 		# update gamestate
@@ -139,12 +147,20 @@ class App(GameLogic):
 		if self._last_click is None:
 			self._possible_takes = []
 		if self.game_is_finished():
+			self._winner = self.game_is_finished()
+			pieces_left = len(self._pieces)
+			queens = 0
+			for p in self._pieces:
+				if p.promotion:
+					queens += 1
+			self._player_scores[self._winner] += fcts.get_pieces_bonus(pieces_left, queens)
+			print(F"Score black: {self._player_scores['black']}\n Score white: {self._player_scores['white']}")
 			print("Game finished")
 
-	"""
-		promote all pieces corresponding to criteria
-	"""
 	def promotion(self):
+		"""
+			promote all pieces corresponding to criteria
+		"""
 		for i in self._pieces:
 			if not i.promotion and i.player == "white":
 				if i.coord[0] == 7:
@@ -153,11 +169,11 @@ class App(GameLogic):
 				if i.coord[0] == 0:
 					i.promote()
 
-	"""
-		receive coords of a click on screen and takes action on it based on curent game state
-	"""
 	def click(self, screen_x, screen_y):
-		new_click = fcts.screen_to_board(screen_x,screen_y,self._tile_height)
+		"""
+			receive coords of a click on screen and takes action on it based on curent game state
+		"""
+		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):
@@ -171,6 +187,8 @@ class App(GameLogic):
 		self.move(new_click)
 		self.update(new_click)
 		self.promotion()
+		self._last_click_time = time() - self._last_click_time
+		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
 	"""
 		temporary-- to be replaced by multiplayer turns
@@ -198,10 +216,10 @@ class App(GameLogic):
 				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
 
-	"""
-		checks if either of the players has no pieces left
-	"""
 	def game_is_finished(self):
+		"""
+			checks if either of the players has no pieces left
+		"""
 		black_pieces = [p for p in self._pieces if p.player == "black"]
 		white_pieces = [p for p in self._pieces if p.player == "white"]
-		return len(black_pieces) == 0 or len(white_pieces) == 0
+		return "white" if len(black_pieces) == 0 else "black" if len(white_pieces) == 0 else False
