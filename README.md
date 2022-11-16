@@ -7,6 +7,14 @@ __rules:__
 - the whites begin
 - the pieces can move in diagonal  
 Image![alt text](https://cdn.discordapp.com/attachments/1031895995648323606/1042461142343225404/mvt.png)  
-- the pieces cant take both pieces suronding a move  
+- the pieces cant take both pieces suronding a move and move backwards to take  
 Image![alt text](https://cdn.discordapp.com/attachments/1031895995648323606/1042461142649417738/prise.png)  
 - when a piece reach the opposite end of the board it is promoted to queen
+- a queen cant move any number of free tiles
+
+__play:__
+you siply play by clicking on screen, it's straight forward
+
+__install:__
+download the archive and launch **main.py**
+you will neen **python** installed and the library **pyglet**
