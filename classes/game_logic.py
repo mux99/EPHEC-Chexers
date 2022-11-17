@@ -66,33 +66,30 @@ class GameLogic:
 							(1, 1, -2): [(0, -1, 1), (-1, 0, 1)]}
 
 		move = fcts.vector_sub(coord_2, coord)
-		move_tmp = move
-		temp = None
-		queen_moves = [move]
 
-		# fix for longer move vectors
-		if move not in valid_takes.keys():
-			# find parallel vector
-			for i in valid_takes.keys():
-				if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
-					move = i
-					temp = i
-					break
-			while True:
-				if (0 < temp[0] == move_tmp[0]) or (temp[0] == move_tmp[0] < 0):
-					break
-				add = fcts.vector_add(move, temp)
-				temp = add
-				queen_moves.append(temp)
-				valid_takes[temp] = [fcts.vector_add(temp, valid_takes[move][0]),
-										fcts.vector_add(temp, valid_takes[move][1])]
+		# find parallel vector
+		for i in valid_takes.keys():
+			if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
+				base_move = i
+				break
+			# while (0 < temp[0] == move_tmp[0]) or (temp[0] == move_tmp[0] < 0):
+			# 	add = fcts.vector_add(move, temp)
+			# 	temp = add
+			# 	queen_moves.append(temp)
+			# 	valid_takes[temp] = [fcts.vector_add(temp, valid_takes[move][0]),
+			# 							fcts.vector_add(temp, valid_takes[move][1])]
 		# list takes
-		for takes in queen_moves:
-			for i in valid_takes[takes]:
+		print(move,base_move)
+		tmp2 = base_move
+		while True:
+			for i in valid_takes[base_move]:
 				tmp = fcts.vector_add(coord_2, i)
 				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-					print(tmp)
 					out.append(tmp)
+			if tmp2 == move:
+				break
+			tmp2 = fcts.vector_add(base_move,tmp2)
+		print(out)
 		return out
 
 	def get_moves(self, coord, player):

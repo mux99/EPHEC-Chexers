@@ -106,7 +106,6 @@ class App(GameLogic):
 			if new_click in self._possible_moves:
 				# remove taken pieces
 				taken_pieces = 0
-				print(self.get_takes(self._last_click, new_click, self._current_player))
 				for i in self.get_takes(self._last_click, new_click, self._current_player):
 					taken_pieces += 1
 					self.take_piece(i)
