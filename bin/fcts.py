@@ -5,7 +5,7 @@ def screen_to_board(x, y, tile_height):
 	"""
 	translate the coord on screen to x,y,z hexagonal axis
 	"""
-	x -= 2*sqrt(3)*tile_height/2
+	x -= sqrt(3)*tile_height*(1.25)
 	y -= tile_height/2
 	board_x = ((2*y)/3)/(tile_height/2)
 	board_z = ((x*sqrt(3) - y)/3)/(tile_height/2)
@@ -60,7 +60,7 @@ def board_to_screen(x, y, z, tile_height):
 	"""
 		translate the coords of hex tiles to their screen coords
 	"""
-	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (2*sqrt(3)*tile_height/2)
+	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
 	return (screen_x, screen_y)
 
