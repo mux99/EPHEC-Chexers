@@ -27,7 +27,7 @@ class App(GameLogic):
 		self._possible_moves = []
 
 		# textures
-		self.textures = {"black":None,"white":None}
+		self.textures = {"black": None, "white": None}
 		self._scale = 1
 		self._select_opacity = 180
 
@@ -68,15 +68,15 @@ class App(GameLogic):
 		pos = fcts.get_starting_pos(8)
 		for i in range(len(pos[0])):
 			self._pieces.append(Piece(coord=pos[0][i], player="white", texture=self.textures["white"],
-				texture2 = self.textures["white_queen"] ,scale=self._scale))
+										texture2 = self.textures["white_queen"] ,scale=self._scale))
 			self._pieces.append(Piece(coord=pos[1][i], player="black", texture=self.textures["black"],
-				texture2 = self.textures["black_queen"], scale=self._scale))
+										texture2 = self.textures["black_queen"], scale=self._scale))
 
 	def select(self, new_click):
 		"""
-			change the piece selected based on games state and click coordonates
+			change the piece selected based on games state and click coordinates
 		"""
-		# click must be on a piece possessed by curent player
+		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
 			return
 
@@ -106,6 +106,7 @@ class App(GameLogic):
 			if new_click in self._possible_moves:
 				# remove taken pieces
 				taken_pieces = 0
+				print(self.get_takes(self._last_click, new_click, self._current_player))
 				for i in self.get_takes(self._last_click, new_click, self._current_player):
 					taken_pieces += 1
 					self.take_piece(i)
@@ -117,10 +118,10 @@ class App(GameLogic):
 				self.get_piece(new_click).opacity = 255
 				self._last_click = None	
 
-
-	"""
-	"""
 	def update(self, new_click):
+		"""
+
+		"""
 		# remove previous takes
 		for i in self._possible_takes:
 			try:
@@ -190,10 +191,10 @@ class App(GameLogic):
 		self._last_click_time = time() - self._last_click_time
 		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
-	"""
-		temporary-- to be replaced by multiplayer turns
-	"""
 	def AI_move(self):
+		"""
+			temporary-- to be replaced by multiplayer turns
+		"""
 		if self._last_click is not None:
 			return
 

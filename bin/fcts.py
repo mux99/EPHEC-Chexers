@@ -17,14 +17,14 @@ def vector_add(vector1, vector2):
 	"""
 		add 2 3D vectors together
 	"""
-	return (vector1[0]+vector2[0], vector1[1]+vector2[1], vector1[2]+vector2[2])
+	return (vector1[0] + vector2[0], vector1[1] + vector2[1], vector1[2] + vector2[2])
 
 
 def vector_sub(vector1, vector2):
 	"""
 		subtract 2 3D vectors together
 	"""
-	return (vector1[0]-vector2[0], vector1[1]-vector2[1], vector1[2]-vector2[2])
+	return (vector1[0] - vector2[0], vector1[1] - vector2[1], vector1[2] - vector2[2])
 
 
 def vector_cross_product(a, b):
@@ -34,6 +34,16 @@ def vector_cross_product(a, b):
 	return (a[1]*b[2] - a[2]*b[1],
 			a[2]*b[0] - a[0]*b[2],
 			a[0]*b[1] - a[1]*b[0])
+
+
+def is_the_right_parallel(a, b):
+	"""
+		determines if a vector is the parallel we are looking for
+	"""
+	for i in range(len(a)):
+		if a[i] < 0 < b[i] or b[i] < 0 < a[i]:
+			return False
+	return True  # if you can't prove it's False it's True
 
 
 def other_player(player):
@@ -123,4 +133,4 @@ def get_time_bonus(time_spent):
 	"""
 		calculates the bonus points for time spent before playing
 	"""
-	return ceil(time_spent ** pi) if time_spent <= 30 else ceil(time_spent) % 15
+	return ceil(time_spent ** pi) if time_spent <= 30 else ceil(time_spent % pi)

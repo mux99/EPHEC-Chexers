@@ -1,35 +1,34 @@
 import bin.fcts as fcts
 
-"""
-	DO NOT USE ALONE
-	extention of App class
-"""
-class GameLogic():
+
+class GameLogic:
 	"""
-		receive coords (x,y,z),
-		returns a boolean:
-		True if a piece is in that place, False otherwise
+		DO NOT USE ALONE
+		extension of App class
 	"""
 	def is_piece(self, coord):
+		"""
+			receive coords (x,y,z),
+			returns a boolean:
+			True if a piece is in that place, False otherwise
+		"""
 		for piece in self._pieces:
 			if coord == piece.coord:
 				return True
 		return False
 
-
-	"""
-		return piece object at given coordonates, none if empty space
-	"""
-	def get_piece(self,coord):
+	def get_piece(self, coord):
+		"""
+			return piece object at given coordonates, none if empty space
+		"""
 		for piece in self._pieces:
 			if piece.coord == coord:
 				return piece
 
-
-	"""
-		take piece at given coords if any
-	"""
-	def take_piece(self,coord):
+	def take_piece(self, coord):
+		"""
+			take piece at given coords if any
+		"""
 		board = self._pieces
 		for i in range(len(board)):
 			if board[i].coord == coord:
@@ -37,90 +36,99 @@ class GameLogic():
 				del board[i]
 				break
 
-
-	"""
-		list takes for all possible moves
-	"""
-	def get_all_takes(self,coord,player):
+	def get_all_takes(self, coord, player):
+		"""
+			list takes for all possible moves
+		"""
 		out = []
 
-		#list possible moves
+		# list possible moves
 		if self.get_piece(self._last_click).promotion:
-			moves = self.get_moves_queen(coord,player)
+			moves = self.get_moves_queen(coord, player)
 		else:
-			moves = self.get_moves(coord,player)
+			moves = self.get_moves(coord, player)
 
-		#list takes for each moves
+		# list takes for each moves
 		for i in moves:
-			out += self.get_takes(coord,i,player)
+			out += self.get_takes(coord, i, player)
 		return list(dict.fromkeys(out))
 
-
-	"""
-		list all takes for given moves
-	"""
-	def get_takes(self,coord,coord_2,player):
+	def get_takes(self, coord, coord_2, player):
+		"""
+			list all takes for given moves
+		"""
 		out = []
-		valid_takes = {(2,-1,-1):[(-1,0,1),(-1,1,0)],
-						(1,-2,1):[(-1,1,0),(0,1,-1)],
-						(-1,-1,2):[(0,1,-1),(1,0,-1)],
-						(-2,1,1):[(1,0,-1),(1,-1,0)],
-						(-1,2,-1):[(1,-1,0),(0,-1,1)],
-						(1,1,-2):[(0,-1,1),(-1,0,1)]}
+		valid_takes = {(2, -1, -1): [(-1, 0, 1), (-1, 1, 0)],
+							(1, -2, 1): [(-1, 1, 0), (0, 1, -1)],
+							(-1, -1, 2): [(0, 1, -1), (1, 0, -1)],
+							(-2, 1, 1): [(1, 0, -1), (1, -1, 0)],
+							(-1, 2, -1): [(1, -1, 0), (0, -1, 1)],
+							(1, 1, -2): [(0, -1, 1), (-1, 0, 1)]}
 
-		move = fcts.vector_sub(coord_2,coord)
+		move = fcts.vector_sub(coord_2, coord)
+		move_tmp = move
+		temp = None
+		queen_moves = [move]
 
-		#fix for longer move vectors
-		if not move in valid_takes.keys():
-			#find paralel vector
+		# fix for longer move vectors
+		if move not in valid_takes.keys():
+			# find parallel vector
 			for i in valid_takes.keys():
-				if fcts.vector_cross_product(move,i) == (0,0,0):
+				if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
 					move = i
+					temp = i
 					break
-
-		#list takes
-		for i in valid_takes[move]:
-			tmp = fcts.vector_add(coord_2,i)
-			if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-				out.append(tmp)
+			while True:
+				if (0 < temp[0] == move_tmp[0]) or (temp[0] == move_tmp[0] < 0):
+					break
+				add = fcts.vector_add(move, temp)
+				temp = add
+				queen_moves.append(temp)
+				valid_takes[temp] = [fcts.vector_add(temp, valid_takes[move][0]),
+										fcts.vector_add(temp, valid_takes[move][1])]
+		# list takes
+		for takes in queen_moves:
+			for i in valid_takes[takes]:
+				tmp = fcts.vector_add(coord_2, i)
+				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
+					print(tmp)
+					out.append(tmp)
 		return out
 
-
-	"""
-		return all coords of valid move from given coord
-	"""
-	def get_moves(self,coord,player):
+	def get_moves(self, coord, player):
+		"""
+			return all coords of valid move from given coord
+		"""
 		out = []
-		valid_moves = {"white":[(2,-1,-1),(1,-2,1),(1,1,-2)],
-						"black":[(-2,1,1),(-1,2,-1),(-1,-1,2)]}
-		valid_back_moves = {"white":[(-1,2,-1),(-1,-1,2)],"black":[(1,1,-2),(1,-2,1)]}
+		valid_moves = {"white": [(2, -1, -1), (1, -2, 1), (1, 1, -2)],
+						"black": [(-2, 1, 1), (-1, 2, -1), (-1, -1, 2)]}
+		valid_back_moves = {"white": [(-1, 2, -1), (-1, -1, 2)], "black": [(1, 1, -2), (1, -2, 1)]}
 
-		#forward moves
+		# forward moves
 		for i in valid_moves[player]:
-			tmp = fcts.vector_add(coord,i)
+			tmp = fcts.vector_add(coord, i)
 			if not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
 
-		#back takes
+		# back takes
 		for i in valid_back_moves[player]:
-			tmp = fcts.vector_add(coord,i)
-			if not self.is_piece(tmp) and fcts.validate_coords(tmp) and len(self.get_takes(coord,tmp,player)) != 0:
+			tmp = fcts.vector_add(coord, i)
+			if not self.is_piece(tmp) and fcts.validate_coords(tmp) and len(self.get_takes(coord, tmp, player)) != 0:
 				out.append(tmp)
 
 		return out
 
-
-	"""
-		return coords of valid moves form given coord for queen (promoted pieces)
-	"""
-	def get_moves_queen(self,coord,player):
+	def get_moves_queen(self, coord, player):
+		"""
+			return coords of valid moves form given coord for queen (promoted pieces)
+		"""
 		out = []
-		valid_moves = [(2,-1,-1),(1,-2,1),(1,1,-2),(-1,2,-1),(-2,1,1),(-1,-1,2)]
+		valid_moves = [(2, -1, -1), (1, -2, 1), (1, 1, -2), (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
 		
 		for i in valid_moves:
-			tmp = fcts.vector_add(coord,i)
+			tmp = fcts.vector_add(coord, i)
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
-				tmp = fcts.vector_add(tmp,i)
+				tmp = fcts.vector_add(tmp, i)
 
 		return out
