@@ -5,12 +5,12 @@ class Piece():
 	"""
 	class of a piece of checkers (on hexagonal tiled board)
 	"""
-	def __init__(self, coord=(0,0,0), player="White", texture=None, texture2=None, scale = 1):
+	def __init__(self, coord=(0,0,0), player="White", texture=None, texture2=None, scale = 1, promotion=False):
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
 		self._player = player
-		self._promotion = False
+		self._promotion = promotion
 
 		if texture != None:
 			self._sprite = pyglet.sprite.Sprite(texture,0,0)

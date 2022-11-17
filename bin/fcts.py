@@ -82,6 +82,15 @@ def get_starting_pos(n):
 	return (whites, blacks)
 
 
+def test_get_starting_pos(n):
+	"""
+	"""
+	whites = [(4,-5,1)]
+	blacks = [(4,-4,0),(4,-6,2),(5,-5,0),(5,-6,1),(3,-4,1),(3,-5,2),
+				(2,-6,4),(5,-8,3),(2,-2,0),(3,-2,-1),(3,-7,4),(6,-8,2),(1,-3,2),(1,-4,3),(5,-3,-2),(6,-4,-2)]
+	return (whites, blacks)
+
+
 def validate_coords(coords):
 	"""
 		return True if the coordinate are valid, False if not

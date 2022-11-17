@@ -71,24 +71,17 @@ class GameLogic:
 			if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
 				base_move = i
 				break
-			# while (0 < temp[0] == move_tmp[0]) or (temp[0] == move_tmp[0] < 0):
-			# 	add = fcts.vector_add(move, temp)
-			# 	temp = add
-			# 	queen_moves.append(temp)
-			# 	valid_takes[temp] = [fcts.vector_add(temp, valid_takes[move][0]),
-			# 							fcts.vector_add(temp, valid_takes[move][1])]
+
 		# list takes
-		print(move,base_move)
-		tmp = base_move
+		tmp = coord
 		while True: #do while tmp2 != move
 			for i in valid_takes[base_move]:
-				take_coord = fcts.vector_add(coord, i)
+				take_coord = fcts.vector_add(tmp, i)
 				if self.is_piece(take_coord) and self.get_piece(take_coord).player == fcts.other_player(player):
 					out.append(take_coord)
-			if tmp == move:
+			if tmp == coord_2:
 				break
 			tmp = fcts.vector_add(base_move,tmp)
-		print(out)
 		return out
 
 	def get_moves(self, coord, player):
