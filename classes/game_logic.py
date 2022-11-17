@@ -75,12 +75,12 @@ class GameLogic:
 		# list takes
 		tmp = coord
 		while True: #do while tmp2 != move
+			if tmp == coord_2:
+				break
 			for i in valid_takes[base_move]:
 				take_coord = fcts.vector_add(tmp, i)
 				if self.is_piece(take_coord) and self.get_piece(take_coord).player == fcts.other_player(player):
 					out.append(take_coord)
-			if tmp == coord_2:
-				break
 			tmp = fcts.vector_add(base_move,tmp)
 		return out
 

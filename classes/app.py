@@ -149,7 +149,7 @@ class App(GameLogic):
 		if self._last_click is None:
 			self._possible_takes = []
 		if self.game_is_finished():
-			self._winner = self.game_is_finished()
+			self._winner = self.get_winner()
 			pieces_left = len(self._pieces)
 			queens = 0
 			for p in self._pieces:
@@ -173,10 +173,9 @@ class App(GameLogic):
 
 	def click(self, screen_x, screen_y):
 		"""
-			receive coords of a click on screen and takes action on it based on curent game state
+			receive coords of a click on screen and takes action on it based on current game state
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
-		#print(new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):
@@ -219,10 +218,18 @@ class App(GameLogic):
 				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
 
-	def game_is_finished(self):
+	def get_winner(self):
 		"""
-			checks if either of the players has no pieces left
+			returns which player wins
 		"""
 		black_pieces = [p for p in self._pieces if p.player == "black"]
 		white_pieces = [p for p in self._pieces if p.player == "white"]
-		return "white" if len(black_pieces) == 0 else "black" if len(white_pieces) == 0 else False
+		return "white" if len(black_pieces) == 0 else "black"
+
+	def game_is_finished(self):
+		"""
+			return True if a player wins, False if not
+		"""
+		black_pieces = [p for p in self._pieces if p.player == "black"]
+		white_pieces = [p for p in self._pieces if p.player == "white"]
+		return len(black_pieces) == 0 or len(white_pieces) == 0
