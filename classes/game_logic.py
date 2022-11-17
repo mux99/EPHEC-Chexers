@@ -58,12 +58,12 @@ class GameLogic:
 			list all takes for given moves
 		"""
 		out = []
-		valid_takes = {(2, -1, -1): [(-1, 0, 1), (-1, 1, 0)],
-							(1, -2, 1): [(-1, 1, 0), (0, 1, -1)],
-							(-1, -1, 2): [(0, 1, -1), (1, 0, -1)],
-							(-2, 1, 1): [(1, 0, -1), (1, -1, 0)],
-							(-1, 2, -1): [(1, -1, 0), (0, -1, 1)],
-							(1, 1, -2): [(0, -1, 1), (-1, 0, 1)]}
+		valid_takes = {(2, -1, -1): [(1, 0, -1), (1, -1, 0)],
+							(1, -2, 1): [(1, -1, 0), (0, -1, -1)],
+							(-1, -1, 2): [(0, -1, 1), (-1, 0, 1)],
+							(-2, 1, 1): [(-1, 1, 0), (-1, 0, 1)],
+							(-1, 2, -1): [(-1, 1, 0), (0, 1, -1)],
+							(1, 1, -2): [(1, 0, -1), (0, 1, -1)]}
 
 		move = fcts.vector_sub(coord_2, coord)
 
@@ -80,15 +80,15 @@ class GameLogic:
 			# 							fcts.vector_add(temp, valid_takes[move][1])]
 		# list takes
 		print(move,base_move)
-		tmp2 = base_move
-		while True:
+		tmp = base_move
+		while True: #do while tmp2 != move
 			for i in valid_takes[base_move]:
-				tmp = fcts.vector_add(coord_2, i)
-				if self.is_piece(tmp) and self.get_piece(tmp).player == fcts.other_player(player):
-					out.append(tmp)
-			if tmp2 == move:
+				take_coord = fcts.vector_add(coord, i)
+				if self.is_piece(take_coord) and self.get_piece(take_coord).player == fcts.other_player(player):
+					out.append(take_coord)
+			if tmp == move:
 				break
-			tmp2 = fcts.vector_add(base_move,tmp2)
+			tmp = fcts.vector_add(base_move,tmp)
 		print(out)
 		return out
 
