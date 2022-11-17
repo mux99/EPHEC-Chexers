@@ -115,7 +115,11 @@ class App(GameLogic):
 				# move player
 				self.get_piece(self._last_click).coord = new_click
 				self.get_piece(new_click).opacity = 255
-				self._last_click = None	
+				self._last_click = None
+				if self._current_player == "white":
+					self._current_player = "black"
+				else:
+					self._current_player = "white"
 
 	def update(self, new_click):
 		"""

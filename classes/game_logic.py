@@ -59,14 +59,13 @@ class GameLogic:
 		"""
 		out = []
 		valid_takes = {(2, -1, -1): [(1, 0, -1), (1, -1, 0)],
-							(1, -2, 1): [(1, -1, 0), (0, -1, -1)],
+							(1, -2, 1): [(1, -1, 0), (0, -1, 1)],
 							(-1, -1, 2): [(0, -1, 1), (-1, 0, 1)],
 							(-2, 1, 1): [(-1, 1, 0), (-1, 0, 1)],
 							(-1, 2, -1): [(-1, 1, 0), (0, 1, -1)],
 							(1, 1, -2): [(1, 0, -1), (0, 1, -1)]}
 
 		move = fcts.vector_sub(coord_2, coord)
-
 		# find parallel vector
 		for i in valid_takes.keys():
 			if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
