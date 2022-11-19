@@ -68,7 +68,7 @@ class App(GameLogic):
 		pos = fcts.get_starting_pos(8)
 		for i in pos[0]:
 			self._pieces.append(Piece(coord=i, player="white", texture=self.textures["white"],
-										texture2 = self.textures["white_queen"] ,scale=self._scale, promotion=True))
+										texture2=self.textures["white_queen"], scale=self._scale))
 		for i in pos[1]:
 			self._pieces.append(Piece(coord=i, player="black", texture=self.textures["black"],
 										texture2 = self.textures["black_queen"], scale=self._scale))
@@ -176,6 +176,7 @@ class App(GameLogic):
 			receive coords of a click on screen and takes action on it based on current game state
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
+		print(new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):

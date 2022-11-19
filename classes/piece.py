@@ -1,23 +1,24 @@
 import pyglet
 from bin.fcts import screen_to_board, board_to_screen
 
-class Piece():
+
+class Piece:
 	"""
 	class of a piece of checkers (on hexagonal tiled board)
 	"""
-	def __init__(self, coord=(0,0,0), player="White", texture=None, texture2=None, scale = 1, promotion=False):
+	def __init__(self, coord=(0, 0, 0), player="White", texture=None, texture2=None, scale = 1, promotion=False):
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
+		self._coord = coord
 		self._player = player
 		self._promotion = promotion
 
-		if texture != None:
+		if texture is not None:
 			self._sprite = pyglet.sprite.Sprite(texture,0,0)
 			self._sprite.scale = scale
-		if texture2 != None:
+		if texture2 is not None:
 			self._promotion_texture = texture2
-
 
 	def __repr__(self):
 		return str(self)
@@ -25,37 +26,33 @@ class Piece():
 	def __str__(self):
 		return f"{self._player}:({self._x},{self._y},{self._z})"
 
-
-	"""
-		promotion of piece to king
-	"""
 	def promote(self):
+		"""
+			promotion of piece to king
+		"""
 		print("promote")
 		tmp = self._sprite.scale
 		self._promotion = True
 		self._sprite = pyglet.sprite.Sprite(self._promotion_texture,0,0)
 		self._sprite.scale = tmp
 
-
-	"""
-		draw sprite of the piece
-	"""
-	def draw(self,tile_height):
+	def draw(self, tile_height):
+		"""
+			draw sprite of the piece
+		"""
 		pos = board_to_screen(self._x, self._y, self._z, tile_height)
 		self._sprite.x = pos[0]
 		self._sprite.y = pos[1]
 		self._sprite.draw()
-		
 
-	"""
-		change coords of the selected piece
-	"""
 	def move_piece(self, x, y, z):
+		"""
+			change coords of the selected piece
+		"""
 		self._x = x
 		self._y = y
 		self._z = z
 		self._coord = (x, y, z)
-
 
 	@property
 	def coord(self):
@@ -68,10 +65,6 @@ class Piece():
 	@property
 	def player(self):
 		return self._player
-
-	@property
-	def coord(self):
-		return (self._x,self._y,self._z)
 
 	@property
 	def scale(self):
@@ -90,6 +83,7 @@ class Piece():
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
+		self._coord = coord
 
 	@scale.setter
 	def scale(self, scale):

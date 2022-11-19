@@ -5,7 +5,7 @@ def screen_to_board(x, y, tile_height):
 	"""
 	translate the coord on screen to x,y,z hexagonal axis
 	"""
-	x -= sqrt(3)*tile_height*(1.25)
+	x -= sqrt(3)*tile_height * 1.25
 	y -= tile_height/2
 	board_x = ((2*y)/3)/(tile_height/2)
 	board_z = ((x*sqrt(3) - y)/3)/(tile_height/2)
@@ -84,10 +84,12 @@ def get_starting_pos(n):
 
 def test_get_starting_pos(n):
 	"""
+		made for testing/debugging purpose only
 	"""
-	whites = [(4,-5,1)]
-	blacks = [(4,-4,0),(4,-6,2),(5,-5,0),(5,-6,1),(3,-4,1),(3,-5,2),
-				(2,-6,4),(5,-8,3),(2,-2,0),(3,-2,-1),(3,-7,4),(6,-8,2),(1,-3,2),(1,-4,3),(5,-3,-2),(6,-4,-2)]
+	whites = [(4, -5, 1)]
+	blacks = [(4, -4, 0), (4, -6, 2), (5, -5, 0), (5, -6, 1), (3, -4, 1), (3, -5, 2),
+				(2, -6, 4), (5, -8, 3), (2, -2, 0), (3, -2, -1), (3, -7, 4), (6, -8, 2), (1, -3, 2),
+				(1, -4, 3), (5, -3, -2), (6, -4, -2)]
 	return (whites, blacks)
 
 
@@ -111,16 +113,33 @@ def validate_coords(coords):
 		print("Illegal Coordinates")
 		return False
 
-	if x in (0, 1):
-		return -7 <= y <= 0
-	elif x in (2, 3):
-		return -8 <= y <= -1
-	elif x in (4, 5):
-		return -9 <= y <= -2
-	elif x in (6, 7):
-		return -10 <= y <= -3
+	if x == 0:
+		return -8 <= y <= 2
+	elif x in (1, 2):
+		return -9 <= y <= 1
+	elif x in (3, 4):
+		return -10 <= y <= 0
+	elif x in (5, 6):
+		return -11 <= y <= -1
+	elif x == 7:
+		return -12 <= y <= -2
 	else:
 		return False
+
+
+def warp(coords):
+	"""
+		gives the coordinates of the tile they can warp to
+	"""
+	x = coords[0]
+	y = coords[1]
+	z = coords[2]
+
+	if 1 <= x <= 7 and 2 >= y >= -1:
+		return vector_add(coords, (0, -11, 11))
+	elif 0 <= x <= 6 and -9 <= y <= -12:
+		return vector_add(coords, (0, 11, -11))
+	return None
 
 
 def takes_score(pieces_taken):
