@@ -130,6 +130,7 @@ def validate_coords(coords):
 def warp(coords):
 	"""
 		gives the coordinates of the tile they can warp to
+		checks to see if it's a valid warp tile are done elsewhere
 	"""
 	x = coords[0]
 	y = coords[1]
@@ -137,7 +138,7 @@ def warp(coords):
 
 	if 1 <= x <= 7 and 2 >= y >= -1:
 		return vector_add(coords, (0, -11, 11))
-	elif 0 <= x <= 6 and -9 <= y <= -12:
+	elif 0 <= x <= 6 and -12 <= y <= -9:
 		return vector_add(coords, (0, 11, -11))
 	return None
 

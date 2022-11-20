@@ -121,8 +121,14 @@ class GameLogic:
 		
 		for i in valid_moves:
 			tmp = fcts.vector_add(coord, i)
+			warp_coord = fcts.warp(tmp)
+			if warp_coord is not None and fcts.validate_coords(warp_coord) and not self.is_piece(warp_coord):
+				out.append(warp_coord)
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
 				tmp = fcts.vector_add(tmp, i)
+				warp_coord = fcts.warp(tmp)
+				if warp_coord is not None and fcts.validate_coords(warp_coord) and not self.is_piece(warp_coord):
+					out.append(warp_coord)
 
 		return out
