@@ -99,7 +99,7 @@ class GameLogic:
 		for i in valid_moves[player]:
 			tmp = fcts.vector_add(coord, i)
 			warp_coord = fcts.warp(tmp)
-			if warp_coord is not None and fcts.validate_coords(warp_coord) and not self.is_piece(warp_coord):
+			if warp_coord is not None and not self.is_piece(warp_coord):
 				out.append(warp_coord)
 			if not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
@@ -118,17 +118,25 @@ class GameLogic:
 		"""
 		out = []
 		valid_moves = [(2, -1, -1), (1, -2, 1), (1, 1, -2), (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
+		warp_coords = {}
 		
 		for i in valid_moves:
 			tmp = fcts.vector_add(coord, i)
 			warp_coord = fcts.warp(tmp)
-			if warp_coord is not None and fcts.validate_coords(warp_coord) and not self.is_piece(warp_coord):
+			if warp_coord is not None and not self.is_piece(warp_coord):
 				out.append(warp_coord)
+				warp_coords[warp_coord] = i
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
 				tmp = fcts.vector_add(tmp, i)
 				warp_coord = fcts.warp(tmp)
-				if warp_coord is not None and fcts.validate_coords(warp_coord) and not self.is_piece(warp_coord):
+				if warp_coord is not None and not self.is_piece(warp_coord):
 					out.append(warp_coord)
+					warp_coords[warp_coord] = i
+		for w, m in warp_coords.items():
+			tmp = fcts.vector_add(w, m)
+			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
+				out.append(tmp)
+				tmp = fcts.vector_add(tmp, m)
 
 		return out

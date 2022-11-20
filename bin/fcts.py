@@ -130,16 +130,16 @@ def validate_coords(coords):
 def warp(coords):
 	"""
 		gives the coordinates of the tile they can warp to
-		checks to see if it's a valid warp tile are done elsewhere
+		checks if the coordinates point to a valid tile, returns None if it fails
 	"""
 	x = coords[0]
 	y = coords[1]
 	z = coords[2]
 
 	if 1 <= x <= 7 and 2 >= y >= -1:
-		return vector_add(coords, (0, -11, 11))
+		return vector_add(coords, (0, -11, 11)) if validate_coords(vector_add(coords, (0, -11, 11))) else None
 	elif 0 <= x <= 6 and -12 <= y <= -9:
-		return vector_add(coords, (0, 11, -11))
+		return vector_add(coords, (0, 11, -11)) if validate_coords(vector_add(coords, (0, 11, -11))) else None
 	return None
 
 
@@ -148,18 +148,18 @@ def takes_score(pieces_taken):
 		returns the score to add for x takes
 		it's functionally the same as doing 100*2**(x-1) but it makes you look smarter
 	"""
-	return 100 << pieces_taken
+	return 100 << (pieces_taken - 1)
 
 
 def get_pieces_bonus(pieces_left, queens):
 	"""
 		gives bonus points based on pieces left and queens
 	"""
-	return 100 << (queens ^ pieces_left) if (queens ^ pieces_left) > pieces_left else 100 << queens
+	return 100 << (queens ^ pieces_left) if (queens ^ pieces_left) > queens else 100 << queens
 
 
 def get_time_bonus(time_spent):
 	"""
 		calculates the bonus points for time spent before playing
 	"""
-	return ceil(time_spent ** pi) if time_spent <= 30 else ceil(time_spent % pi)
+	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent)
