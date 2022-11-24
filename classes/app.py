@@ -2,6 +2,7 @@ import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
 from time import time
+from re import findall
 
 from random import randint
 import pyglet
@@ -35,7 +36,7 @@ class App(GameLogic):
 		self._tile_height = 1
 
 	def __str__(self):
-		return f"player:{self._current_player}\nboard:{self._pieces}"
+		return f"board:{self._pieces}"
 
 	def rescale(self, height):
 		"""
@@ -156,8 +157,22 @@ class App(GameLogic):
 				if p.promotion:
 					queens += 1
 			self._player_scores[self._winner] += fcts.get_pieces_bonus(pieces_left, queens)
+			if self._player_scores[self._winner] < self._player_scores[fcts.other_player(self._winner)]:
+				# if the winner has a lower score than the loser, swap them
+				tmp_high = self._player_scores[fcts.other_player(self._winner)]
+				tmp_low = self._player_scores[self._winner]
+				self._player_scores[fcts.other_player(self._winner)] = tmp_low
+				self._player_scores[self._winner] = tmp_high
+			if self._player_scores["white"].bit_length() > 16:  # if the score has more than 16 bits, remove the 16 LMV
+				binary_white = bin(self._player_scores["white"])[:-16]
+				self._player_scores["white"] = int(binary_white, 2)
+			if self._player_scores["black"].bit_length() > 16:
+				binary_black = bin(self._player_scores["black"])[:-16]
+				self._player_scores["black"] = int(binary_black, 2)
+			self._player_scores[fcts.other_player(self._winner)] *= 0.75  # winner's bonus but reversed
 			print(F"Score black: {self._player_scores['black']}\n Score white: {self._player_scores['white']}")
 			print("Game finished")
+			exit(0)
 
 	def promotion(self):
 		"""
@@ -176,7 +191,7 @@ class App(GameLogic):
 			receive coords of a click on screen and takes action on it based on current game state
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
-		print(new_click)
+		#print(new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):
@@ -231,6 +246,9 @@ class App(GameLogic):
 		"""
 			return True if a player wins, False if not
 		"""
-		black_pieces = [p for p in self._pieces if p.player == "black"]
-		white_pieces = [p for p in self._pieces if p.player == "white"]
-		return len(black_pieces) == 0 or len(white_pieces) == 0
+		string = self.__str__()  # this is not a good way to implement this but it looks cooler
+		return len(findall("white", string)) == 0 or len(findall("black", string)) == 0
+		# black_pieces = [p for p in self._pieces if p.player == "black"]
+		# white_pieces = [p for p in self._pieces if p.player == "white"]
+		# return len(black_pieces) == 0 or len(white_pieces) == 0
+#

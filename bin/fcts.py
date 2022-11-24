@@ -97,13 +97,12 @@ def validate_coords(coords):
 	"""
 		return True if the coordinate are valid, False if not
 		usable tiles coords follow a pattern like that:
-		if x = 0 | 1 -> y = 0 to -7
-		if x = 2 | 3 -> y = -1 to -8
-		if x = 4 | 5 -> y = -2 to -9
-		if x = 6 | 7 -> y = -3 to -10
+		if x = 0 -> y = -8 to 2
+		if x = 1 | 2 -> y = -9 to 1
+		if x = 3 | 4 -> y = -10 to 0
+		if x = 5 | 6 -> y = -11 to -1
+		if x = 7 -> y = -12 to -2
 		z isn't relevant since it depends on the value of x and y at the same time
-		can't really check that without a big match statement with hardcoded values or lots of ifs :/
-		works at least i guess ¯\_(ツ)_/¯
 	"""
 	x = coords[0]
 	y = coords[1]
