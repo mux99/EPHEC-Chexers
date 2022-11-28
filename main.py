@@ -47,12 +47,15 @@ if __name__ == '__main__':
 	textures = {"white": pyglet.resource.image("img/white.png"),
 				"black": pyglet.resource.image("img/black.png"),
 				"white_queen": pyglet.resource.image("img/white_queen.png"),
-				"black_queen": pyglet.resource.image("img/black_queen.png")}
+				"black_queen": pyglet.resource.image("img/black_queen.png"),
+				"white_icon": pyglet.resource.image("img/white_icon.png"),
+				"black_icon": pyglet.resource.image("img/black_icon.png")}
 
 	# center texture pivot
 	for i in textures.keys():
-		textures[i].anchor_x = textures[i].width // 2
-		textures[i].anchor_y = textures[i].height // 2
+		if i != "white_icon" and i!= "black_icon":
+			textures[i].anchor_x = textures[i].width // 2
+			textures[i].anchor_y = textures[i].height // 2
 
 	# setup board
 	app.textures = textures

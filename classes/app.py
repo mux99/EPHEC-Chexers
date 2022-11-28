@@ -13,10 +13,8 @@ class App(GameLogic):
 		---TBD---
 	"""
 	def __init__(self):
-		self._current_player = "white"
-		self._player_indicator_sprites = {"white": pyglet.resource.image("img/white_icon.png"),
-											"black": pyglet.resource.image("img/black_icon.png")}
-		self._player_indicator = pyglet.sprite.Sprite(self._player_indicator_sprites["white"], 0, 0)
+		self._current_player = ""
+		self._player_indicator = None
 
 		self._player_scores = {"white": 0, "black": 0}
 		self._winner = None
@@ -49,11 +47,13 @@ class App(GameLogic):
 		"""
 		self._tile_height = height / 6.25
 		self._scale = height / 2600
+
 		for i in self._pieces:
 			i.scale = self._scale
 
 		for i in self._ghost_pieces:
 			i.scale = self._scale
+
 		self._player_indicator.scale = self._scale / 3
 
 	def draw_textures(self):
@@ -81,6 +81,9 @@ class App(GameLogic):
 		for i in pos[1]:
 			self._pieces.append(Piece(coord=i, player="black", texture=self.textures["black"],
 										texture2 = self.textures["black_queen"], scale=self._scale))
+			
+		self._current_player = "white"
+		self._player_indicator = pyglet.sprite.Sprite(self.textures["white_icon"],0,0)
 
 	def select(self, new_click):
 		"""
@@ -127,7 +130,7 @@ class App(GameLogic):
 				self.get_piece(new_click).opacity = 255
 				self._last_click = None
 				self._current_player = fcts.other_player(self._current_player)
-				self._player_indicator.image = self._player_indicator_sprites[self._current_player]
+				self._player_indicator.image = self.textures[self._current_player+"_icon"]
 
 	def update(self, new_click):
 		"""
