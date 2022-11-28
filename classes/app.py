@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
+from file_intercation import scoreboard_add
 
 from time import time
 from random import randint
@@ -188,9 +189,9 @@ class App(GameLogic):
 			self._player_scores[fcts.other_player(self._winner)] *= 0.55  # winner's bonus but reversed
 			self._player_scores[fcts.other_player(self._winner)] = \
 				round(self._player_scores[fcts.other_player(self._winner)], 2)  # avoids floats with lots of 0s
-			white_csv = F"\n{self.player_names['white']},{self._player_scores['white']},{self._winner=='white'}\n"
-			black_csv = F"{self.player_names['black']},{self._player_scores['black']},{self._winner=='black'}"
-			fcts.scoreboard_add(white_csv, black_csv)
+			white_csv = F"{self.player_names['white']},{self._player_scores['white']},{self._winner=='white'}\n"
+			black_csv = F"{self.player_names['black']},{self._player_scores['black']},{self._winner=='black'}\n"
+			scoreboard_add(white_csv, black_csv)
 			print(F"Score black: {self._player_scores['black']}\n Score white: {self._player_scores['white']}")
 			print("Game finished")
 			exit(0)

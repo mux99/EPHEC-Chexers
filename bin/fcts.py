@@ -162,18 +162,3 @@ def get_time_bonus(time_spent):
 		calculates the bonus points for time spent before playing
 	"""
 	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent)
-
-
-def scoreboard_add(*lines):
-	"""
-		adds players scores to the scoreboard
-	"""
-	for line in lines:
-		if line is None or line.count(",") != 2:  # checks the format of the csv line to add
-			return
-		try:
-			with open("scoreboard.csv", "a") as score_csv:
-				score_csv.write(line)
-				score_csv.close()
-		except IOError:
-			return
