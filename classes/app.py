@@ -1,9 +1,8 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
-from time import time
-from re import findall
 
+from time import time
 from random import randint
 import pyglet
 
@@ -245,22 +244,3 @@ class App(GameLogic):
 			for i in self.get_takes(move[0],move[1],"black"):
 				self.take_piece(i)
 			self.get_piece(move[0]).coord = move[1]
-
-	def get_winner(self):
-		"""
-			returns which player wins
-		"""
-		black_pieces = [p for p in self._pieces if p.player == "black"]
-		white_pieces = [p for p in self._pieces if p.player == "white"]
-		return "white" if len(black_pieces) == 0 else "black"
-
-	def game_is_finished(self):
-		"""
-			return True if a player wins, False if not
-		"""
-		string = self.__str__()  # this is not a good way to implement this but it looks cooler
-		return len(findall("white", string)) == 0 or len(findall("black", string)) == 0
-		# black_pieces = [p for p in self._pieces if p.player == "black"]
-		# white_pieces = [p for p in self._pieces if p.player == "white"]
-		# return len(black_pieces) == 0 or len(white_pieces) == 0
-#
