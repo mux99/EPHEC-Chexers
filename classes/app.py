@@ -14,8 +14,8 @@ class App(GameLogic):
 	"""
 	def __init__(self):
 		self._current_player = "white"
-		self._player_indicator_sprites = {"white": pyglet.resource.image("img/SPwhite.png"),
-											"black": pyglet.resource.image("img/SPblack.png")}
+		self._player_indicator_sprites = {"white": pyglet.resource.image("img/white_icon.png"),
+											"black": pyglet.resource.image("img/black_icon.png")}
 		self._player_indicator = pyglet.sprite.Sprite(self._player_indicator_sprites["white"], 0, 0)
 
 		self._player_scores = {"white": 0, "black": 0}
