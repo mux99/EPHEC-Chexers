@@ -15,6 +15,7 @@ class App(GameLogic):
 		self._current_player = "white"
 		self._player_scores = {"white": 0, "black": 0}
 		self._winner = None
+		self.paused = False
 
 		# pieces
 		self._pieces = []  # list all pieces on the board

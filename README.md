@@ -11,10 +11,11 @@ Image![alt text](https://cdn.discordapp.com/attachments/1031895995648323606/1042
 Image![alt text](https://cdn.discordapp.com/attachments/1031895995648323606/1042461142649417738/prise.png)  
 - when a piece reach the opposite end of the board it is promoted to queen
 - a queen cant move any number of free tiles
+- when a queen move to a warp tile (in green) she can't take any enemy pieces on that turn
 
 __play:__
 you siply play by clicking on screen, it's straight forward
 
 __install:__
 download the archive and launch **main.py**
-you will neen **python** installed and the library **pyglet**
+you will neen **python 3** installed and the library **pyglet (pip install pyglet)**
