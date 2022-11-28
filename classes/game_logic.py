@@ -67,21 +67,23 @@ class GameLogic:
 
 		move = fcts.vector_sub(coord_2, coord)
 		# find parallel vector
+		base_move = None
 		for i in valid_takes.keys():
 			if fcts.vector_cross_product(move, i) == (0, 0, 0) and fcts.is_the_right_parallel(move, i):
 				base_move = i
 				break
-
 		# list takes
 		tmp = coord
-		while True: #do while tmp2 != move
+		while True:  # do while tmp2 != move
+			if tmp == coord_2:
+				break
+			if base_move is None:
+				break
 			for i in valid_takes[base_move]:
 				take_coord = fcts.vector_add(tmp, i)
 				if self.is_piece(take_coord) and self.get_piece(take_coord).player == fcts.other_player(player):
 					out.append(take_coord)
-			if tmp == coord_2:
-				break
-			tmp = fcts.vector_add(base_move,tmp)
+			tmp = fcts.vector_add(base_move, tmp)
 		return out
 
 	def get_moves(self, coord, player):
@@ -96,6 +98,9 @@ class GameLogic:
 		# forward moves
 		for i in valid_moves[player]:
 			tmp = fcts.vector_add(coord, i)
+			warp_coord = fcts.warp(tmp)
+			if warp_coord is not None and not self.is_piece(warp_coord):
+				out.append(warp_coord)
 			if not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
 
@@ -113,11 +118,25 @@ class GameLogic:
 		"""
 		out = []
 		valid_moves = [(2, -1, -1), (1, -2, 1), (1, 1, -2), (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
+		warp_coords = {}
 		
 		for i in valid_moves:
 			tmp = fcts.vector_add(coord, i)
+			warp_coord = fcts.warp(tmp)
+			if warp_coord is not None and not self.is_piece(warp_coord):
+				out.append(warp_coord)
+				warp_coords[warp_coord] = i
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
 				out.append(tmp)
 				tmp = fcts.vector_add(tmp, i)
+				warp_coord = fcts.warp(tmp)
+				if warp_coord is not None and not self.is_piece(warp_coord):
+					out.append(warp_coord)
+					warp_coords[warp_coord] = i
+		for w, m in warp_coords.items():
+			tmp = fcts.vector_add(w, m)
+			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
+				out.append(tmp)
+				tmp = fcts.vector_add(tmp, m)
 
 		return out
