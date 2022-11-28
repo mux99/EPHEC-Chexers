@@ -14,9 +14,6 @@ class App(GameLogic):
 	"""
 	def __init__(self):
 		self._current_player = "white"
-		self._player_indicator_sprites = {"white": pyglet.resource.image("img/SPwhite.png"),
-											"black": pyglet.resource.image("img/SPblack.png")}
-		self._player_indicator = pyglet.sprite.Sprite(self._player_indicator_sprites["white"], 0, 0)
 		self.player_names = {"white": None, "black": None}
 		self._current_player = ""
 		self._player_indicator = None
@@ -72,6 +69,8 @@ class App(GameLogic):
 		# draw ghosts
 		for i in self._ghost_pieces:
 			i.draw(self._tile_height)
+		self._current_player = "white"
+		self._player_indicator = pyglet.sprite.Sprite(self.textures["white_icon"],0,0)
 		self._player_indicator.draw()
 		self._player_indicator.scale = self._scale / 3
 
@@ -135,7 +134,7 @@ class App(GameLogic):
 				self.get_piece(new_click).opacity = 255
 				self._last_click = None
 				self._current_player = fcts.other_player(self._current_player)
-				self._player_indicator.image = self._player_indicator_sprites[self._current_player]
+				self._player_indicator.image = self.textures[self._current_player+"_icon"]
 
 	def update(self, new_click):
 		"""
