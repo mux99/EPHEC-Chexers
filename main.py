@@ -1,7 +1,7 @@
 import pyglet
 from pyglet import clock, font, image, window
 from pyglet.window import key, Window
-
+#from pyautogui import prompt
 from classes.app import App
 
 
@@ -61,7 +61,14 @@ if __name__ == '__main__':
 	app.textures = textures
 	app.scale = scale*0.73
 	app.init_board()
-
+	#player1_name = prompt("Enter a name for player 1: ", "Checkers")
+	#player2_name = prompt("Enter a name for player 2: ", "Checkers")
+	#while player1_name is None or len(player1_name) == 0:
+	#	player1_name = prompt("Enter a name for player 1: ", "Checkers")
+	#while player2_name is None or len(player2_name) == 0:
+	#	player2_name = prompt("Enter a name for player 2: ", "Checkers")
+	#app.player_names["white"] = player1_name
+	#app.player_names["black"] = player2_name
 	# launch pyglet app (!= app.py App)
 	pyglet.clock.schedule_interval(update, 1/60)
 	pyglet.app.run()
