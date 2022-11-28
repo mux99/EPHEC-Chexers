@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
 	# center texture pivot
 	for i in textures.keys():
-		if i != "white_icon" and i!= "black_icon":
+		if i != "white_icon" and i != "black_icon":
 			textures[i].anchor_x = textures[i].width // 2
 			textures[i].anchor_y = textures[i].height // 2
 

@@ -15,7 +15,6 @@ class App(GameLogic):
 	def __init__(self):
 		self._current_player = "white"
 		self.player_names = {"white": None, "black": None}
-		self._current_player = ""
 		self._player_indicator = None
 
 		self._player_scores = {"white": 0, "black": 0}
@@ -69,10 +68,9 @@ class App(GameLogic):
 		# draw ghosts
 		for i in self._ghost_pieces:
 			i.draw(self._tile_height)
-		self._current_player = "white"
-		self._player_indicator = pyglet.sprite.Sprite(self.textures["white_icon"],0,0)
-		self._player_indicator.draw()
+		self._player_indicator = pyglet.sprite.Sprite(self.textures[self._current_player+"_icon"], 0, 0)
 		self._player_indicator.scale = self._scale / 3
+		self._player_indicator.draw()
 
 	def init_board(self):
 		"""
