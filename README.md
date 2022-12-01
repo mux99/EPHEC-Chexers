@@ -21,14 +21,14 @@ pray the eldritch gods to be favored by the uptruce algorithm
 - the **pyglet** library
 
 ### Run
-download the archive and run **main.py**
+download the archive and run **main.py**   
 a window will open, you simply play by clicking
 
 ## Authors
 Contributors names and contact info
 
-Dourov Maxime
-CRUQUENAIRE Achille
+Dourov Maxime   
+CRUQUENAIRE Achille   
 GENDEBIEN Jonas
 
 ## Acknowledgments
