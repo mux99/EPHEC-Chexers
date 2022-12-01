@@ -65,32 +65,34 @@ def board_to_screen(x, y, z, tile_height):
 	return (screen_x, screen_y)
 
 
-def get_starting_pos(n):
+def get_starting_pos(player):
 	"""
-		generate a list of starting locations for each player
+		generate a list of starting locations for given player
 	"""
-	whites = []
-	blacks = []
+	out = []
 
-	for i in range(n):
-		whites.append((0, -i, i))
-		whites.append((1, -i, i-1))
+	for i in range(8):
+		if player == "white":
+			out.append((0, -i, i))
+			out.append((1, -i, i-1))
+		elif player == "black":
+			out.append((6, -i-3, i-3))
+			out.append((7, -i-3, i-4))
 
-		blacks.append((6, -i-3, i-3))
-		blacks.append((7, -i-3, i-4))
-
-	return (whites, blacks)
+	return out
 
 
-def test_get_starting_pos(n):
+def test_get_starting_pos(player):
 	"""
 		made for testing/debugging purpose only
 	"""
-	whites = [(4, -5, 1)]
-	blacks = [(4, -4, 0), (4, -6, 2), (5, -5, 0), (5, -6, 1), (3, -4, 1), (3, -5, 2),
+	if player == "white":
+		return [(4, -5, 1)]
+	elif player == "black":
+		return [(4, -4, 0), (4, -6, 2), (5, -5, 0), (5, -6, 1), (3, -4, 1), (3, -5, 2),
 				(2, -6, 4), (5, -8, 3), (2, -2, 0), (3, -2, -1), (3, -7, 4), (6, -8, 2), (1, -3, 2),
 				(1, -4, 3), (5, -3, -2), (6, -4, -2)]
-	return (whites, blacks)
+	return []
 
 
 def validate_coords(coords):
