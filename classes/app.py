@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
+from file_intercation import scoreboard_add
 
 from time import time
 from random import randint
@@ -12,7 +13,8 @@ class App(GameLogic):
 		---TBD---
 	"""
 	def __init__(self):
-		self._current_player = ""
+		self._current_player = "white"
+		self.player_names = {"white": None, "black": None}
 		self._player_indicator = None
 
 		self._player_scores = {"white": 0, "black": 0}
@@ -81,7 +83,7 @@ class App(GameLogic):
 		for i in pos[1]:
 			self._pieces.append(Piece(coord=i, player="black", texture=self.textures["black"],
 										texture2 = self.textures["black_queen"], scale=self._scale))
-			
+
 		self._current_player = "white"
 		self._player_indicator = pyglet.sprite.Sprite(self.textures["white_icon"],0,0)
 
@@ -175,13 +177,18 @@ class App(GameLogic):
 				tmp_low = self._player_scores[self._winner]
 				self._player_scores[fcts.other_player(self._winner)] = tmp_low
 				self._player_scores[self._winner] = tmp_high
-			if self._player_scores["white"].bit_length() > 16:  # if the score has more than 16 bits, remove the 16 LMV
-				binary_white = bin(self._player_scores["white"])[:-16]
+			if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
+				binary_white = bin(self._player_scores["white"])[:21]
 				self._player_scores["white"] = int(binary_white, 2)
-			if self._player_scores["black"].bit_length() > 16:
-				binary_black = bin(self._player_scores["black"])[:-16]
+			if self._player_scores["black"].bit_length() > 21:
+				binary_black = bin(self._player_scores["black"])[:21]
 				self._player_scores["black"] = int(binary_black, 2)
-			self._player_scores[fcts.other_player(self._winner)] *= 0.75  # winner's bonus but reversed
+			self._player_scores[fcts.other_player(self._winner)] *= 0.55  # winner's bonus but reversed
+			self._player_scores[fcts.other_player(self._winner)] = \
+				round(self._player_scores[fcts.other_player(self._winner)], 2)  # avoids floats with lots of 0s
+			white_csv = F"{self.player_names['white']},{self._player_scores['white']},{self._winner=='white'}\n"
+			black_csv = F"{self.player_names['black']},{self._player_scores['black']},{self._winner=='black'}\n"
+			scoreboard_add(white_csv, black_csv)
 			print(F"Score black: {self._player_scores['black']}\n Score white: {self._player_scores['white']}")
 			print("Game finished")
 			exit(0)
