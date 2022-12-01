@@ -15,17 +15,22 @@ def on_draw():
 	back.draw()
 	app.draw_textures()
 
+	if app.paused:
+		scoreboard_back.draw()
+
 
 @win.event
 def on_resize(width, height):
-	back.scale = height / back_img.height
+	back.scale = height/back_img.height
+	scoreboard_back.scale = (height/back_img.height)/2.1
+	scoreboard_back.position = (win.get_size()[0]//2, win.get_size()[1]//2)
 	app.rescale(height)
 
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):
-	app.click(x, y)
-	# app.AI_move()
+	if not app.paused:
+		app.click(x, y)
 
 
 def update(dt):
@@ -39,9 +44,14 @@ def update(dt):
 if __name__ == '__main__':
 	# add background
 	back_img = pyglet.resource.image("img/board.png")
+	scoreboard_img = pyglet.resource.image("img/scoreboard.png")
+	scoreboard_img.anchor_x = scoreboard_img.width//2
+	scoreboard_img.anchor_y = scoreboard_img.height//2
 	back = pyglet.sprite.Sprite(back_img, 0, 0)
+	scoreboard_back = pyglet.sprite.Sprite(scoreboard_img, win.get_size()[0]//2, win.get_size()[1]//2)
 	scale = win.get_size()[1] / back_img.height
 	back.scale = scale
+	scoreboard_back.scale = scale/2.1
 
 	# load pieces textures
 	textures = {"white": pyglet.resource.image("img/white.png"),

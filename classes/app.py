@@ -17,7 +17,7 @@ class App(GameLogic):
 
 		self._player_scores = {"white": 0, "black": 0}
 		self._winner = None
-		self.paused = False
+		self.paused = True
 
 		# pieces
 		self._pieces = []  # list all pieces on the board
@@ -66,8 +66,9 @@ class App(GameLogic):
 		# draw ghosts
 		for i in self._ghost_pieces:
 			i.draw(self._tile_height)
-		self._player_indicator.draw()
-		self._player_indicator.scale = self._scale / 3
+		
+		if not self.paused:
+			self._player_indicator.draw()
 
 	def init_board(self):
 		"""
