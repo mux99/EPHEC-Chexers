@@ -1,74 +1,62 @@
 import pyglet
-from pyglet import clock, font, image, window
-from pyglet.window import key, Window
+from pyglet.window import key
+
 #from pyautogui import prompt
 from classes.app import App
+from classes.scoreboard import Scoreboard
 
 
-win = window.Window(resizable=True, caption="Checkers")
+win = pyglet.window.Window(resizable=True, caption="Checkers")
 
 @win.event
 def on_draw():
 	win.clear()
-	back.draw()
 	app.draw_textures()
 
-	if app.winner is not None:
-		scoreboard_back.draw()
-
+	if app.winner != None:
+		scoreboard.draw()
 
 @win.event
 def on_resize(width, height):
-	back.scale = height/back.image.height
-	scoreboard_back.scale = (height/back.image.height)/2.1
-	scoreboard_back.position = (win.get_size()[0]//2, win.get_size()[1]//2)
 	app.rescale(height)
-
+	scoreboard.rescale(height)
 
 @win.event
 def on_mouse_press(x, y, button, modifiers):
 	if app.winner is None:
 		app.click(x, y)
 
-
-def update(dt):
-	"""
-	called once per game tick
-	dt: is the delta time between calls (---TBD--- check unit, ms?)
-	"""
-	pass  # not useful for now but mandatory
-
+@win.event
+def on_key_press(symbol, modifiers):
+	if app.winner != None:
+		if symbol >= 33 and symbol <= 126:
+			scoreboard.keypress(chr(symbol))
+		elif symbol == key.BACKSPACE:
+			scoreboard.backspace()
+		elif symbol == key.ENTER:
+			scoreboard.enter()
 
 if __name__ == '__main__':
-	# add background
-	back_img = pyglet.resource.image("img/board.png")
-	back = pyglet.sprite.Sprite(back_img, 0, 0)
-
 	# load pieces textures
 	textures = {"white": pyglet.resource.image("img/white.png"),
 				"black": pyglet.resource.image("img/black.png"),
 				"white_queen": pyglet.resource.image("img/white_queen.png"),
 				"black_queen": pyglet.resource.image("img/black_queen.png"),
 				"white_icon": pyglet.resource.image("img/white_icon.png"),
-				"black_icon": pyglet.resource.image("img/black_icon.png")}
+				"black_icon": pyglet.resource.image("img/black_icon.png"),
+				"background": pyglet.resource.image("img/board.png"),
+				"scoreboard": pyglet.resource.image("img/scoreboard.png")}
 
 	# center texture pivot
 	for i in textures.keys():
-		if i != "white_icon" and i != "black_icon":
+		if i not in ["white_icon","black_icon","background"]:
 			textures[i].anchor_x = textures[i].width // 2
 			textures[i].anchor_y = textures[i].height // 2
 
 	# setup board
-	app = App(textures)
-	
-	# player1_name = prompt("Enter a name for player 1: ", "Checkers")
-	# player2_name = prompt("Enter a name for player 2: ", "Checkers")
-	# while player1_name is None or len(player1_name) == 0:
-	#	player1_name = prompt("Enter a name for player 1: ", "Checkers")
-	# while player2_name is None or len(player2_name) == 0:
-	#	player2_name = prompt("Enter a name for player 2: ", "Checkers")
-	# app.player_names["white"] = player1_name
-	# app.player_names["black"] = player2_name
-	# launch pyglet app (!= app.py App)
-	pyglet.clock.schedule_interval(update, 1/60)
+	scoreboard = Scoreboard("data/scoreboard.csv",textures["scoreboard"],win)
+	# scoreboard.add(100,"white")
+
+	app = App(textures,scoreboard)
+
 	pyglet.app.run()
