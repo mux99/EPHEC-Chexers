@@ -13,6 +13,7 @@ class App(GameLogic):
 	"""
 	def __init__(self,textures,scoreboard = None):
 		self._current_player = "white"
+		self._continue = False
 		self.player_names = {"white": None, "black": None}
 
 		self._player_indicator = pyglet.sprite.Sprite(textures["white_icon"],0,0)
@@ -124,14 +125,16 @@ class App(GameLogic):
 				self.get_piece(self._last_click).coord = new_click
 				self.get_piece(new_click).opacity = 255
 				
+				# select same piece if a take can be done
 				self._last_click = None
 				if len(self.get_all_takes(new_click,self._current_player)) >= 0 and taken_pieces > 0:
 					self.select(new_click)
+					self._continue = True
 				else:
 					self._current_player = fcts.other_player(self._current_player)
 					self._player_indicator.image = self.textures[self._current_player+"_icon"]
+					self._continue = False
 
-					
 	def update(self):
 		"""
 
@@ -190,7 +193,8 @@ class App(GameLogic):
 		if self._last_click == new_click:
 			return
 
-		self.select(new_click)
+		if not self._continue:
+			self.select(new_click)
 		self.move(new_click)
 		self.promotion()
 		self.update()
