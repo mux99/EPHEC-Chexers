@@ -1,12 +1,20 @@
 import pyglet
-from bin.fcts import screen_to_board, board_to_screen
+from bin.fcts import board_to_screen
 
 
 class Piece:
+	""" class of a piece of checkers (on hexagonal tiled board)
 	"""
-	class of a piece of checkers (on hexagonal tiled board)
-	"""
-	def __init__(self, coord=(0, 0, 0), player="White", texture=None, texture2=None, promotion=False, scale = 1):
+
+	def __init__(self, coord: tuple = (0, 0, 0), player: str = "White", texture=None, texture2=None, promotion=False, scale: float = 1):
+		""" constructor of Piece
+		:coords: (x,y,z) valid coordonates of the board, the piece's coordonates
+		:player: 'white' or 'black', the player it belongs to
+		:texture: the normal texture
+		:texture2: the promoted texture
+		:promotion: --debug purposes--
+		:scale: scaling factor of the sprite
+		"""
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
@@ -15,7 +23,7 @@ class Piece:
 		self._promotion = promotion
 
 		if texture is not None:
-			self._sprite = pyglet.sprite.Sprite(texture,0,0)
+			self._sprite = pyglet.sprite.Sprite(texture, 0, 0)
 			self._sprite.scale = scale
 		if texture2 is not None:
 			self._promotion_texture = texture2
@@ -27,32 +35,21 @@ class Piece:
 		return f"{self._player}:({self._x},{self._y},{self._z})"
 
 	def promote(self):
-		"""
-			promotion of piece to king
+		""" promotion of piece to queen
 		"""
 		print("promote")
 		tmp = self._sprite.scale
 		self._promotion = True
-		self._sprite = pyglet.sprite.Sprite(self._promotion_texture,0,0)
+		self._sprite = pyglet.sprite.Sprite(self._promotion_texture, 0, 0)
 		self._sprite.scale = tmp
 
 	def draw(self, tile_height):
-		"""
-			draw sprite of the piece
+		""" draw sprite of the piece
 		"""
 		pos = board_to_screen(self._x, self._y, self._z, tile_height)
 		self._sprite.x = pos[0]
 		self._sprite.y = pos[1]
 		self._sprite.draw()
-
-	def move_piece(self, x, y, z):
-		"""
-			change coords of the selected piece
-		"""
-		self._x = x
-		self._y = y
-		self._z = z
-		self._coord = (x, y, z)
 
 	@property
 	def coord(self):
@@ -74,31 +71,27 @@ class Piece:
 	def opacity(self):
 		return self._sprite.opacity
 
-	@property
-	def color(self):
-		return self._sprite.color
-
 	@coord.setter
-	def coord(self, coord):
+	def coord(self, coord: tuple):
+		"""
+		:coord: (x,y,z) valid coordonates of the board, the piece's coordonates
+		"""
 		self._x = coord[0]
 		self._y = coord[1]
 		self._z = coord[2]
 		self._coord = coord
 
 	@scale.setter
-	def scale(self, scale):
+	def scale(self, scale: float):
 		self._sprite.scale = scale
 
 	@opacity.setter
-	def opacity(self, opacity):
+	def opacity(self, opacity: int):
+		"""
+		:opacity: between 0 and 255
+			255 is opaque, 0 is invisible
+		"""
 		self._sprite.opacity = opacity
-
-	@color.setter
-	def color(self, color):
-		self._sprite.color = color
 
 	def delete(self):
 		self._sprite.delete()
-
-
-

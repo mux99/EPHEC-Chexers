@@ -2,7 +2,7 @@ def read_csv(filename):
     """ read a csv file and return matrix of string
     
     :filename: the string path to the file to be open
-
+    
     :return: tuple of tuples of strings
     """
     out = []

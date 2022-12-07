@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
+from classes.scoreboard import Scoreboard
 
 from time import time
 from random import randint
@@ -9,9 +10,23 @@ import pyglet
 
 class App(GameLogic):
 	"""
-		---TBD---
+		main app of the game
 	"""
-	def __init__(self,textures,scoreboard = None):
+	def __init__(self,textures:dict,scoreboard:Scoreboard=None):
+		""" constructor of app
+
+		:textures: contains all the textures used for the game, as follows:
+			'white' - normal piece
+			'black' - normal piece
+			'white_queen' - prmoted piece
+			'black_queen' - prmoted piece
+			'white_icon' - icon showing curent player
+			'black_icon' - icon showing curent player
+			'background' - the board
+
+		:scoreboard: the scoreboard linked to the game (displayed and controled separately)
+		
+		"""
 		self._current_player = "white"
 		self._continue = False
 		self.player_names = {"white": None, "black": None}
@@ -49,10 +64,14 @@ class App(GameLogic):
 
 	def __str__(self):
 		return f"board:{self._pieces}"
+	
+	def preselect(self):
+		pass
 
 	def rescale(self, height:int):
-		"""
-			recalculate and update all scaling of pieces and distances
+		""" recalculate and update all scaling of textures and distances
+
+		:height: the new height of the window in pixels
 		"""
 		self._background.scale = height/self._background.image.height
 		self._tile_height = height / 6.25
@@ -66,8 +85,9 @@ class App(GameLogic):
 		self._player_indicator.scale = height / 6500
 
 	def draw_textures(self):
-		"""
-			draw all pieces on the board
+		""" draw all textures on screen
+
+		depending on gamestate some textures will no be drawn
 		"""
 		self._background.draw()
 		# draw pieces
@@ -82,8 +102,12 @@ class App(GameLogic):
 			self._player_indicator.draw()
 
 	def select(self, new_click:tuple):
-		"""
-			change the piece selected based on games state and click coordinates
+		"""change the piece selected based on games state and click coordinates
+
+		:new_click: should contain x,y and z coordonates of the clicked tile
+			see readme.md for info on the coodronate system
+
+			do nothig if click on empty tile or the piece doesn't belong to the curent player
 		"""
 		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
@@ -102,13 +126,17 @@ class App(GameLogic):
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
 		if self.get_piece(self._last_click).promotion:
-			self._possible_moves = self.get_moves_queen(self._last_click,self._current_player)
+			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves_queen(self._last_click))
 		else:
-			self._possible_moves = self.get_moves(self._last_click,self._current_player)
+			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves(self._last_click,self._current_player))
 
 	def move(self, new_click:tuple):
-		"""
-			move selected piece so clicked location (if valid)
+		""" move selected piece to clicked location (if valid)
+
+		:new_click: should contain x,y and z of the clicked tile
+			see readme.md for info on the coodronate system
+
+			do nothing if clicked tile isn't empty
 		"""
 		if not self.is_piece(new_click) and self._last_click is not None:
 			# only if move is valid
@@ -136,8 +164,7 @@ class App(GameLogic):
 					self._continue = False
 
 	def update(self):
-		"""
-
+		""" update and refresh various parameters of the game
 		"""
 		# remove previous takes
 		for i in self._possible_takes:
@@ -167,8 +194,9 @@ class App(GameLogic):
 
 			
 	def promotion(self):
-		"""
-			promote all pieces corresponding to criteria
+		"""promote all pieces worthy
+		
+		a worthy piece is sitting on the last oposite (from where it started) row of the board
 		"""
 		for i in self._pieces:
 			if not i.promotion and i.player == "white":
@@ -179,8 +207,14 @@ class App(GameLogic):
 					i.promote()
 
 	def click(self, screen_x:int, screen_y:int):
-		"""
-			receive coords of a click on screen and takes action on it based on current game state
+		"""receive coords of a click on screen and takes action on it based on current game state
+
+		:screen_x: the x value in pixel of the click position
+		:screen_y: the y value in pixel of the click position
+
+		will select or move a piece on the board based on previous click
+		do nothing if clicked twice on same tile
+			or click coordonates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
 		#print(new_click)
@@ -199,13 +233,16 @@ class App(GameLogic):
 		self.promotion()
 		self.update()
 
-		if self.game_is_finished():
+		if self.is_game_finished():
 			self.end_game()
 
 		self._last_click_time = time() - self._last_click_time
 		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
 	def end_game(self):
+		""" is called a the end of the game
+		calculate the score of each player and add them to the scoreboard
+		"""
 		self.winner = self.get_winner()
 		pieces_left = len(self._pieces)
 		queens = 0
