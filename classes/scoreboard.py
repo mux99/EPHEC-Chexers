@@ -18,6 +18,7 @@ class Scoreboard():
 		self._data.append(["",player,str(score)])
 		self._names.append(None)
 		self._scores.append(None)
+		self.rescale(self._height)
 
 	def draw(self):
 			self._sprite.draw()
@@ -32,7 +33,11 @@ class Scoreboard():
 		self._height = height
 		self._sprite.scale = (height/self._sprite.image.height)*0.8
 		self._sprite.position = (self._win.get_size()[0]//2, self._win.get_size()[1]//2)
+		self._names = []
+		self._scores = []
 		for i in range(len(self._data)):
+			if i >= 10:
+				break
 			self._names[i] = pyglet.text.Label(self._data[i][0],font_size=height/28,anchor_y='center',color=(0,0,0,255))
 			self._names[i].position = (self._sprite.position[0]-(self._sprite.width/2.1),self._sprite.position[1]+((height/txt_h)*(3-i)))
 			
@@ -57,6 +62,6 @@ class Scoreboard():
 			file.write("\n".join([",".join(x) for x in self._data]))
 	
 	def sort(self):
-		self._data = sorted(self._data, key=lambda i : i[2])
+		self._data = sorted(self._data, key=lambda i : -int(i[2]))
 		self.rescale(self._height)
 		
