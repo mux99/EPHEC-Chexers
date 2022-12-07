@@ -1,6 +1,7 @@
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
+from classes.scoreboard import Scoreboard
 
 from time import time
 from random import randint
@@ -9,10 +10,25 @@ import pyglet
 
 class App(GameLogic):
 	"""
-		---TBD---
+		main app of the game
 	"""
-	def __init__(self,textures,scoreboard = None):
+	def __init__(self,textures:dict,scoreboard:Scoreboard=None):
+		""" constructor of app
+
+		:textures: contains all the textures used for the game, as follows:
+			'white' - normal piece
+			'black' - normal piece
+			'white_queen' - prmoted piece
+			'black_queen' - prmoted piece
+			'white_icon' - icon showing curent player
+			'black_icon' - icon showing curent player
+			'background' - the board
+
+		:scoreboard: the scoreboard linked to the game (displayed and controled separately)
+		
+		"""
 		self._current_player = "white"
+		self._continue = False
 		self.player_names = {"white": None, "black": None}
 
 		self._player_indicator = pyglet.sprite.Sprite(textures["white_icon"],0,0)
@@ -48,10 +64,14 @@ class App(GameLogic):
 
 	def __str__(self):
 		return f"board:{self._pieces}"
+	
+	def preselect(self):
+		pass
 
-	def rescale(self, height):
-		"""
-			recalculate and update all scaling of pieces and distances
+	def rescale(self, height:int):
+		""" recalculate and update all scaling of textures and distances
+
+		:height: the new height of the window in pixels
 		"""
 		self._background.scale = height/self._background.image.height
 		self._tile_height = height / 6.25
@@ -65,8 +85,9 @@ class App(GameLogic):
 		self._player_indicator.scale = height / 6500
 
 	def draw_textures(self):
-		"""
-			draw all pieces on the board
+		""" draw all textures on screen
+
+		depending on gamestate some textures will no be drawn
 		"""
 		self._background.draw()
 		# draw pieces
@@ -80,9 +101,13 @@ class App(GameLogic):
 		if self.winner is None:
 			self._player_indicator.draw()
 
-	def select(self, new_click):
-		"""
-			change the piece selected based on games state and click coordinates
+	def select(self, new_click:tuple):
+		"""change the piece selected based on games state and click coordinates
+
+		:new_click: should contain x,y and z coordonates of the clicked tile
+			see readme.md for info on the coodronate system
+
+			do nothig if click on empty tile or the piece doesn't belong to the curent player
 		"""
 		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
@@ -101,13 +126,17 @@ class App(GameLogic):
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
 		if self.get_piece(self._last_click).promotion:
-			self._possible_moves = self.get_moves_queen(self._last_click,self._current_player)
+			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves_queen(self._last_click))
 		else:
-			self._possible_moves = self.get_moves(self._last_click,self._current_player)
+			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves(self._last_click,self._current_player))
 
-	def move(self, new_click):
-		"""
-			move selected piece so clicked location (if valid)
+	def move(self, new_click:tuple):
+		""" move selected piece to clicked location (if valid)
+
+		:new_click: should contain x,y and z of the clicked tile
+			see readme.md for info on the coodronate system
+
+			do nothing if clicked tile isn't empty
 		"""
 		if not self.is_piece(new_click) and self._last_click is not None:
 			# only if move is valid
@@ -123,13 +152,19 @@ class App(GameLogic):
 				# move player
 				self.get_piece(self._last_click).coord = new_click
 				self.get_piece(new_click).opacity = 255
+				
+				# select same piece if a take can be done
 				self._last_click = None
-				self._current_player = fcts.other_player(self._current_player)
-				self._player_indicator.image = self.textures[self._current_player+"_icon"]
+				if len(self.get_all_takes(new_click,self._current_player)) >= 0 and taken_pieces > 0:
+					self.select(new_click)
+					self._continue = True
+				else:
+					self._current_player = fcts.other_player(self._current_player)
+					self._player_indicator.image = self.textures[self._current_player+"_icon"]
+					self._continue = False
 
-	def update(self, new_click):
-		"""
-
+	def update(self):
+		""" update and refresh various parameters of the game
 		"""
 		# remove previous takes
 		for i in self._possible_takes:
@@ -138,7 +173,7 @@ class App(GameLogic):
 			except AttributeError:
 				# the piece doesn't exist anymore (killed)
 				pass
-
+		
 		# update gamestate
 		self._ghost_pieces = []
 		if self._last_click is not None:
@@ -146,7 +181,7 @@ class App(GameLogic):
 			for i in self._possible_moves:
 				tmp = Piece(texture=self.textures[self._current_player],scale=self._pieces[0].scale)
 				tmp.coord = i
-				tmp.opacity = 150
+				tmp.opacity = 100
 				self._ghost_pieces.append(tmp)
 
 			# mark new takes
@@ -157,37 +192,11 @@ class App(GameLogic):
 		if self._last_click is None:
 			self._possible_takes = []
 
-		if self.game_is_finished():
-			self.winner = self.get_winner()
-			pieces_left = len(self._pieces)
-			queens = 0
-			for p in self._pieces:
-				if p.promotion:
-					queens += 1
-			self._player_scores[self.winner] += fcts.get_pieces_bonus(pieces_left, queens)
-			if self._player_scores[self.winner] < self._player_scores[fcts.other_player(self.winner)]:
-				# if the winner has a lower score than the loser, swap them
-				tmp_high = self._player_scores[fcts.other_player(self.winner)]
-				tmp_low = self._player_scores[self.winner]
-				self._player_scores[fcts.other_player(self.winner)] = tmp_low
-				self._player_scores[self.winner] = tmp_high
-			if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
-				binary_white = bin(self._player_scores["white"])[:21]
-				self._player_scores["white"] = int(binary_white, 2)
-			if self._player_scores["black"].bit_length() > 21:
-				binary_black = bin(self._player_scores["black"])[:21]
-				self._player_scores["black"] = int(binary_black, 2)
-			self._player_scores[fcts.other_player(self.winner)] *= 0.55  # winner's bonus but reversed
-			self._player_scores[fcts.other_player(self.winner)] = \
-			round(self._player_scores[fcts.other_player(self.winner)], 2)  # avoids floats with lots of 0s
-
-			# add values to scoreboard 
-			self._scoreboard.add(self._player_scores[self.winner],self.winner)
-			self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
-
+			
 	def promotion(self):
-		"""
-			promote all pieces corresponding to criteria
+		"""promote all pieces worthy
+		
+		a worthy piece is sitting on the last oposite (from where it started) row of the board
 		"""
 		for i in self._pieces:
 			if not i.promotion and i.player == "white":
@@ -197,9 +206,15 @@ class App(GameLogic):
 				if i.coord[0] == 0:
 					i.promote()
 
-	def click(self, screen_x, screen_y):
-		"""
-			receive coords of a click on screen and takes action on it based on current game state
+	def click(self, screen_x:int, screen_y:int):
+		"""receive coords of a click on screen and takes action on it based on current game state
+
+		:screen_x: the x value in pixel of the click position
+		:screen_y: the y value in pixel of the click position
+
+		will select or move a piece on the board based on previous click
+		do nothing if clicked twice on same tile
+			or click coordonates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
 		#print(new_click)
@@ -212,35 +227,45 @@ class App(GameLogic):
 		if self._last_click == new_click:
 			return
 
-		self.select(new_click)
+		if not self._continue:
+			self.select(new_click)
 		self.move(new_click)
-		self.update(new_click)
 		self.promotion()
+		self.update()
+
+		if self.is_game_finished():
+			self.end_game()
+
 		self._last_click_time = time() - self._last_click_time
 		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
-	def AI_move(self):
+	def end_game(self):
+		""" is called a the end of the game
+		calculate the score of each player and add them to the scoreboard
 		"""
-			temporary-- to be replaced by multiplayer turns
-		"""
-		if self._last_click is not None:
-			return
+		self.winner = self.get_winner()
+		pieces_left = len(self._pieces)
+		queens = 0
+		for p in self._pieces:
+			if p.promotion:
+				queens += 1
+		self._player_scores[self.winner] += fcts.get_pieces_bonus(pieces_left, queens)
+		if self._player_scores[self.winner] < self._player_scores[fcts.other_player(self.winner)]:
+			# if the winner has a lower score than the loser, swap them
+			tmp_high = self._player_scores[fcts.other_player(self.winner)]
+			tmp_low = self._player_scores[self.winner]
+			self._player_scores[fcts.other_player(self.winner)] = tmp_low
+			self._player_scores[self.winner] = tmp_high
+		if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
+			binary_white = bin(self._player_scores["white"])[:21]
+			self._player_scores["white"] = int(binary_white, 2)
+		if self._player_scores["black"].bit_length() > 21:
+			binary_black = bin(self._player_scores["black"])[:21]
+			self._player_scores["black"] = int(binary_black, 2)
+		self._player_scores[fcts.other_player(self.winner)] *= 0.55  # winner's bonus but reversed
+		self._player_scores[fcts.other_player(self.winner)] = \
+		round(self._player_scores[fcts.other_player(self.winner)], 2)  # avoids floats with lots of 0s
 
-		moves = []
-
-		# list all possible moves
-		for i in self._pieces:
-			if i.player == "black":
-				if i.promotion:
-					potential_moves = self.get_moves_queen(i.coord, "black")
-				else:
-					potential_moves = self.get_moves(i.coord, "black")
-				for j in potential_moves:
-					moves.append((i.coord, j))
-
-		# select a random move
-		if len(moves) > 0:
-			move = moves[randint(0,len(moves)-1)]
-			for i in self.get_takes(move[0],move[1],"black"):
-				self.take_piece(i)
-			self.get_piece(move[0]).coord = move[1]
+		# add values to scoreboard 
+		self._scoreboard.add(self._player_scores[self.winner],self.winner)
+		self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))

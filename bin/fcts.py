@@ -1,9 +1,11 @@
 from math import sqrt, ceil, pi
 
 
-def screen_to_board(x, y, tile_height):
-	"""
-	translate the coord on screen to x,y,z hexagonal axis
+def screen_to_board(x:int, y:int, tile_height:float):
+	""" translate the coord on screen to x,y,z hexagonal axis
+	:x: the x value in pixel of the click position
+	:y: the y value in pixel of the click position
+	:tile_height: the height of a tile on the board in pixel
 	"""
 	x -= sqrt(3)*tile_height * 1.25
 	y -= tile_height/2
@@ -13,32 +15,28 @@ def screen_to_board(x, y, tile_height):
 	return (round(board_x), round(board_y), round(board_z))
 
 
-def vector_add(vector1, vector2):
+def vector_add(a:tuple, b:tuple):
+	""" add 2 3D vectors together
 	"""
-		add 2 3D vectors together
-	"""
-	return (vector1[0] + vector2[0], vector1[1] + vector2[1], vector1[2] + vector2[2])
+	return (a[0]+b[0], a[1]+b[1], a[2]+b[2])
 
 
-def vector_sub(vector1, vector2):
+def vector_sub(a:tuple, b:tuple):
+	""" subtract 2 3D vectors together
 	"""
-		subtract 2 3D vectors together
-	"""
-	return (vector1[0] - vector2[0], vector1[1] - vector2[1], vector1[2] - vector2[2])
+	return (a[0]-b[0], a[1]-b[1], a[2]-b[2])
 
 
-def vector_cross_product(a, b):
+def vector_cross_product(a:tuple, b:tuple):
+	""" find the cross product of 2 3D vectors
 	"""
-		find the cross product of 2 vectors
-	"""
-	return (a[1]*b[2] - a[2]*b[1],
-			a[2]*b[0] - a[0]*b[2],
-			a[0]*b[1] - a[1]*b[0])
+	return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 
 
-def is_the_right_parallel(a, b):
-	"""
-		determines if a vector is the parallel we are looking for
+def is_the_right_parallel(a:tuple, b:tuple):
+	""" determines if a vector is the parallel we are looking for
+
+	a and b must be of same lenght
 	"""
 	for i in range(len(a)):
 		if a[i] < 0 < b[i] or b[i] < 0 < a[i]:
@@ -46,9 +44,9 @@ def is_the_right_parallel(a, b):
 	return True  # if you can't prove it's False it's True
 
 
-def other_player(player):
+def other_player(player:str):
 	"""
-		return the opposite player
+	:return: the opposite player
 	"""
 	if player == "black":
 		return "white"
@@ -56,18 +54,21 @@ def other_player(player):
 		return "black"
 
 
-def board_to_screen(x, y, z, tile_height):
-	"""
-		translate the coords of hex tiles to their screen coords
+def board_to_screen(x:int, y:int, z:int, tile_height:float):
+	""" translate the coords of hex tiles to their screen coords
+
+	:x, y, z: valid board coordonate
+	:tile_height: the height of a tile on the board in pixel
 	"""
 	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
-	return (screen_x, screen_y)
+	return (round(screen_x), round(screen_y))
 
 
 def get_starting_pos(player):
-	"""
-		generate a list of starting locations for given player
+	""" generate a list of starting locations for given player
+
+	:player: 'white' or 'black' is the current player
 	"""
 	out = []
 
@@ -83,8 +84,9 @@ def get_starting_pos(player):
 
 
 def test_get_starting_pos(player):
-	"""
-		made for testing/debugging purpose only
+	""" made for testing/debugging purpose only
+
+	:player: 'white' or 'black' is the current player
 	"""
 	if player == "white":
 		return [(4, -5, 1)]
@@ -96,8 +98,10 @@ def test_get_starting_pos(player):
 
 
 def validate_coords(coords):
-	"""
-		return True if the coordinate are valid, False if not
+	""" True if the coordinate are valid, False if not
+
+	:coords: (x,y,z) valid coordonates of the board
+
 		usable tiles coords follow a pattern like that:
 		if x = 0 -> y = -8 to 2
 		if x = 1 | 2 -> y = -9 to 1
@@ -129,9 +133,11 @@ def validate_coords(coords):
 
 
 def warp(coords):
-	"""
-		gives the coordinates of the tile they can warp to
-		checks if the coordinates point to a valid tile, returns None if it fails
+	""" gives the coordinates of the tile they can warp to
+		see readme.md for rules on teleportation
+	:coords: (x,y,z) valid coordonates of the board
+
+	:return: warped coordonates, none if cannot warp
 	"""
 	x = coords[0]
 	y = coords[1]
