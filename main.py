@@ -17,7 +17,7 @@ def on_draw():
 	win.clear()
 	app.draw_textures()
 
-	if app.winner != None:
+	if app.winner is not None:
 		scoreboard.draw()
 
 @win.event
@@ -32,8 +32,8 @@ def on_mouse_press(x, y, button, modifiers):
 
 @win.event
 def on_key_press(symbol, modifiers):
-	if app.winner != None:
-		if symbol >= 33 and symbol <= 126:
+	if app.winner is not None:
+		if 33 <= symbol <= 126:
 			scoreboard.keypress(chr(symbol))
 		elif symbol == key.BACKSPACE:
 			scoreboard.backspace()

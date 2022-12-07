@@ -14,7 +14,7 @@ class GameLogic:
 
     def is_piece(self, coord: tuple):
         """
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
 
         :return: True if a piece is in that place, False otherwise
         """
@@ -25,9 +25,9 @@ class GameLogic:
 
     def get_piece(self, coord: tuple) -> Piece:
         """
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
 
-        :return: the piece a the given coordonates, None if empty tile
+        :return: the piece at the given coordinates, None if empty tile
         """
         for piece in self._pieces:
             if piece.coord == coord:
@@ -36,7 +36,7 @@ class GameLogic:
     def take_piece(self, coord: tuple):
         """ take piece at given coords if any
 
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
 
         a taken piece is removed from the board
         """
@@ -50,10 +50,10 @@ class GameLogic:
     def get_all_takes(self, coord: tuple, player: str):
         """ list takes for all possible moves
 
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
         :player: 'white' or 'black' is the current player
 
-        :return: a list of the coords of the takable pieces
+        :return: a list of the coords of the pieces that can be taken
         """
         out = []
 
@@ -73,19 +73,19 @@ class GameLogic:
     def get_takes(self, coord, coord_2, player):
         """ list all takes for given moves
 
-        :coords: (x,y,z) valid coordonates of the board, the current position
-        :coords_2: (x,y,z) valid coordonates of the board, the new position
+        :coords: (x,y,z) valid coordinates of the board, the current position
+        :coords_2: (x,y,z) valid coordinates of the board, the new position
         :player: 'white' or 'black' is the current player
 
-        :return: a list of the coords of the takable pieces
+        :return: a list of the coords of the pieces that can be taken
         """
         out = []
         valid_takes = {(2, -1, -1): [(1, 0, -1), (1, -1, 0)],
-                       (1, -2, 1): [(1, -1, 0), (0, -1, 1)],
-                       (-1, -1, 2): [(0, -1, 1), (-1, 0, 1)],
-                       (-2, 1, 1): [(-1, 1, 0), (-1, 0, 1)],
-                       (-1, 2, -1): [(-1, 1, 0), (0, 1, -1)],
-                       (1, 1, -2): [(1, 0, -1), (0, 1, -1)]}
+                        (1, -2, 1): [(1, -1, 0), (0, -1, 1)],
+                        (-1, -1, 2): [(0, -1, 1), (-1, 0, 1)],
+                        (-2, 1, 1): [(-1, 1, 0), (-1, 0, 1)],
+                        (-1, 2, -1): [(-1, 1, 0), (0, 1, -1)],
+                        (1, 1, -2): [(1, 0, -1), (0, 1, -1)]}
 
         move = fcts.vector_sub(coord_2, coord)
         # find parallel vector
@@ -111,14 +111,14 @@ class GameLogic:
     def get_moves(self, coord, player):
         """ all coords of valid move from given coord
         
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
         :player: 'white' or 'black' is the current player
 
         :return: a list of the coords of new coords to move to, empty if none
         """
         out = []
         valid_moves = {"white": [(2, -1, -1), (1, -2, 1), (1, 1, -2)],
-                       "black": [(-2, 1, 1), (-1, 2, -1), (-1, -1, 2)]}
+                        "black": [(-2, 1, 1), (-1, 2, -1), (-1, -1, 2)]}
         valid_back_moves = {
             "white": [(-1, 2, -1), (-1, -1, 2)], "black": [(1, 1, -2), (1, -2, 1)]}
 
@@ -147,13 +147,13 @@ class GameLogic:
     def get_moves_queen(self, coord):
         """ return coords of valid moves form given coord for queen (promoted pieces)
         
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
 
         :return: a list of the coords of new coords to move to, empty if none
         """
         out = []
         valid_moves = [(2, -1, -1), (1, -2, 1), (1, 1, -2),
-                       (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
+                        (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
         warp_coords = {}
 
         for i in valid_moves:
@@ -178,12 +178,12 @@ class GameLogic:
         return out
 
     def filter_moves(self, coord, player, moves):
-        """ filter given moves acording tu rule of priority
+        """ filter given moves according tu rule of priority
         
-        :coords: (x,y,z) valid coordonates of the board
+        :coords: (x,y,z) valid coordinates of the board
         :player: 'white' or 'black' is the current player
-        :moves: [(x,y,z),...] list of valid coordonates of the board
-			can be empty
+        :moves: [(x,y,z),...] list of valid coordinates of the board
+            can be empty
 
         :return: a list of the coords of new coords to move to, empty if none
         """
@@ -214,7 +214,7 @@ class GameLogic:
         """ 
         :return: True if a player wins, False if not
         """
-        string = self.__str__()  # this is not a good way to implement this but it looks cooler
+        string = self.__str__()  # this is not a good way to implement this, but it looks cooler
         return len(findall("white", string)) == 0 or len(findall("black", string)) == 0
         # black_pieces = [p for p in self._pieces if p.player == "black"]
         # white_pieces = [p for p in self._pieces if p.player == "white"]

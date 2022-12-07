@@ -4,7 +4,6 @@ from classes.game_logic import GameLogic
 from classes.scoreboard import Scoreboard
 
 from time import time
-from random import randint
 import pyglet
 
 
@@ -18,13 +17,13 @@ class App(GameLogic):
 		:textures: contains all the textures used for the game, as follows:
 			'white' - normal piece
 			'black' - normal piece
-			'white_queen' - prmoted piece
-			'black_queen' - prmoted piece
-			'white_icon' - icon showing curent player
-			'black_icon' - icon showing curent player
+			'white_queen' - promoted piece
+			'black_queen' - promoted piece
+			'white_icon' - icon showing current player
+			'black_icon' - icon showing current player
 			'background' - the board
 
-		:scoreboard: the scoreboard linked to the game (displayed and controled separately)
+		:scoreboard: the scoreboard linked to the game (displayed and controlled separately)
 		
 		"""
 		self._current_player = "white"
@@ -104,10 +103,10 @@ class App(GameLogic):
 	def select(self, new_click:tuple):
 		"""change the piece selected based on games state and click coordinates
 
-		:new_click: should contain x,y and z coordonates of the clicked tile
-			see readme.md for info on the coodronate system
+		:new_click: should contain x,y and z coordinates of the clicked tile
+			see readme.md for info on the coordinate system
 
-			do nothig if click on empty tile or the piece doesn't belong to the curent player
+			do nothing if click on empty tile or the piece doesn't belong to the current player
 		"""
 		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
@@ -134,7 +133,7 @@ class App(GameLogic):
 		""" move selected piece to clicked location (if valid)
 
 		:new_click: should contain x,y and z of the clicked tile
-			see readme.md for info on the coodronate system
+			see readme.md for info on the coordinate system
 
 			do nothing if clicked tile isn't empty
 		"""
@@ -196,7 +195,7 @@ class App(GameLogic):
 	def promotion(self):
 		"""promote all pieces worthy
 		
-		a worthy piece is sitting on the last oposite (from where it started) row of the board
+		a worthy piece is sitting on the last opposite (from where it started) row of the board
 		"""
 		for i in self._pieces:
 			if not i.promotion and i.player == "white":
@@ -214,7 +213,7 @@ class App(GameLogic):
 
 		will select or move a piece on the board based on previous click
 		do nothing if clicked twice on same tile
-			or click coordonates are not on the board
+			or click coordinates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
 		#print(new_click)
@@ -240,7 +239,7 @@ class App(GameLogic):
 		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
 	def end_game(self):
-		""" is called a the end of the game
+		""" is called at the end of the game
 		calculate the score of each player and add them to the scoreboard
 		"""
 		self.winner = self.get_winner()
@@ -256,7 +255,7 @@ class App(GameLogic):
 			tmp_low = self._player_scores[self.winner]
 			self._player_scores[fcts.other_player(self.winner)] = tmp_low
 			self._player_scores[self.winner] = tmp_high
-		if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
+		if self._player_scores["white"].bit_length() > 21:  # if either player's score has more than 21 bits, truncate
 			binary_white = bin(self._player_scores["white"])[:21]
 			self._player_scores["white"] = int(binary_white, 2)
 		if self._player_scores["black"].bit_length() > 21:

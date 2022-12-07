@@ -36,7 +36,7 @@ def vector_cross_product(a:tuple, b:tuple):
 def is_the_right_parallel(a:tuple, b:tuple):
 	""" determines if a vector is the parallel we are looking for
 
-	a and b must be of same lenght
+	a and b must be of same length
 	"""
 	for i in range(len(a)):
 		if a[i] < 0 < b[i] or b[i] < 0 < a[i]:
@@ -57,8 +57,8 @@ def other_player(player:str):
 def board_to_screen(x:int, y:int, z:int, tile_height:float):
 	""" translate the coords of hex tiles to their screen coords
 
-	:x, y, z: valid board coordonate
-	:tile_height: the height of a tile on the board in pixel
+	:x, y, z: valid board coordinate
+	:tile_height: the height of a tile on the board in pixels
 	"""
 	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
@@ -68,7 +68,7 @@ def board_to_screen(x:int, y:int, z:int, tile_height:float):
 def get_starting_pos(player):
 	""" generate a list of starting locations for given player
 
-	:player: 'white' or 'black' is the current player
+	:player: 'white' or 'black', corresponds the current player
 	"""
 	out = []
 
@@ -86,7 +86,7 @@ def get_starting_pos(player):
 def test_get_starting_pos(player):
 	""" made for testing/debugging purpose only
 
-	:player: 'white' or 'black' is the current player
+	:player: 'white' or 'black', corresponds the current player
 	"""
 	if player == "white":
 		return [(4, -5, 1)]
@@ -100,7 +100,7 @@ def test_get_starting_pos(player):
 def validate_coords(coords):
 	""" True if the coordinate are valid, False if not
 
-	:coords: (x,y,z) valid coordonates of the board
+	:coords: (x,y,z) valid coordinates of the board
 
 		usable tiles coords follow a pattern like that:
 		if x = 0 -> y = -8 to 2
@@ -135,9 +135,9 @@ def validate_coords(coords):
 def warp(coords):
 	""" gives the coordinates of the tile they can warp to
 		see readme.md for rules on teleportation
-	:coords: (x,y,z) valid coordonates of the board
+	:coords: (x,y,z) valid coordinates of the board
 
-	:return: warped coordonates, none if cannot warp
+	:return: warped coordinates, None if cannot warp
 	"""
 	x = coords[0]
 	y = coords[1]
@@ -150,23 +150,26 @@ def warp(coords):
 	return None
 
 
-def takes_score(pieces_taken):
+def takes_score(pieces_taken: int):
 	"""
-		returns the score to add for x takes
-		it's functionally the same as doing 100*2**(x-1) but it makes you look smarter
+		:pieces_taken: amount of pieces taken in the turn
+		:return: bonus points awarded for taking pieces
 	"""
 	return 100 << (pieces_taken - 1)
 
 
-def get_pieces_bonus(pieces_left, queens):
+def get_pieces_bonus(pieces_left: int, queens: int):
 	"""
-		gives bonus points based on pieces left and queens
+		:pieces_left: amount of pieces the winner has at the end of the game
+		:queens: int, how many of these pieces are queens
+		:return: bonus points awarded for the amount of pieces and queens left
 	"""
 	return 100 << (queens ^ pieces_left) if (queens ^ pieces_left) > queens else 100 << queens
 
 
-def get_time_bonus(time_spent):
+def get_time_bonus(time_spent: float):
 	"""
-		calculates the bonus points for time spent before playing
+		:time_spent: amount of seconds taken to play that turn
+		:return: bonus points awarded for playing quickly
 	"""
-	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent)
+	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent/2)
