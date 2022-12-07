@@ -46,7 +46,7 @@ class GameLogic:
 		out = []
 
 		# list possible moves
-		if self.get_piece(self._last_click).promotion:
+		if self.get_piece(coord).promotion:
 			moves = self.get_moves_queen(coord, player)
 		else:
 			moves = self.get_moves(coord, player)

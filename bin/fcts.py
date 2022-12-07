@@ -59,6 +59,7 @@ def other_player(player):
 def board_to_screen(x, y, z, tile_height):
 	"""
 		translate the coords of hex tiles to their screen coords
+
 	"""
 	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)

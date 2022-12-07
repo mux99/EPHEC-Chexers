@@ -2,7 +2,9 @@ import pyglet
 
 from bin.file_intercation import read_csv
 
-txt_h = 19.8
+txt_h = 19.6
+font_h = 35
+name_max = 5
 class Scoreboard():
 	def __init__(self, filename, img, win):
 		self._stack = []
@@ -41,14 +43,14 @@ class Scoreboard():
 		for i in range(len(self._data)):
 			if i >= 11:
 				break
-			self._names.append(pyglet.text.Label(self._data[i][0],font_size=height/28,anchor_y='center',color=(0,0,0,255)))
-			self._names[i].position = (self._sprite.position[0]-(self._sprite.width/2.1),self._sprite.position[1]+((height/txt_h)*(3-i)))
+			self._names.append(pyglet.text.Label(self._data[i][0],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
+			self._names[i].position = (self._sprite.position[0]-(self._sprite.width/2.15),self._sprite.position[1]+((height/txt_h)*(3-i)))
 			
-			self._scores.append(pyglet.text.Label(self._data[i][2],font_size=height/28,anchor_y='center',color=(0,0,0,255)))
+			self._scores.append(pyglet.text.Label(self._data[i][2],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
 			self._scores[i].position = (self._sprite.position[0]-(self._sprite.width/6.25),self._sprite.position[1]+((height/txt_h)*(3-i)))
 	
 	def keypress(self,key):
-		if len(self._data[-1][0]) <= 4:
+		if len(self._data[-1][0]) < name_max and len(self._stack) > 0:
 			self._data[-1][0] += key
 			self._names[-1].text += key
 
@@ -57,12 +59,26 @@ class Scoreboard():
 		self._names[-1].text = self._names[-1].text[:-1]
 	
 	def enter(self):
+		if len(self._stack) == 0:
+			return
 		self.sort()
+		i = 0
+		tmp = []
+		while i < len(self._data):
+			if i == 0:
+				i += 1
+				continue
+			if self._data[i][0] in tmp:
+				del self._data[i]
+			else:
+				tmp.append(self._data[i][0])
+				i += 1
 		self.save()
 		del self._stack[0]
+
 		if len(self._stack) > 0:
 			self._data.append(self._stack[0])
-			self.rescale(self._height)
+		self.rescale(self._height)
 
 	def save(self):
 		with open(self._file,'w') as file:

@@ -1,5 +1,9 @@
 import pyglet
 from pyglet.window import key
+from pyglet import font
+
+font.add_file('fonts/MontserratAlternates-SemiBold.ttf')
+action_man = font.load('Monserrat Alternates Semi Bold', 16)
 
 #from pyautogui import prompt
 from classes.app import App
@@ -55,7 +59,6 @@ if __name__ == '__main__':
 
 	# setup board
 	scoreboard = Scoreboard("data/scoreboard.csv",textures["scoreboard"],win)
-	# scoreboard.add(100,"white")
 
 	app = App(textures,scoreboard)
 

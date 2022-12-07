@@ -49,7 +49,7 @@ class App(GameLogic):
 	def __str__(self):
 		return f"board:{self._pieces}"
 
-	def rescale(self, height):
+	def rescale(self, height:int):
 		"""
 			recalculate and update all scaling of pieces and distances
 		"""
@@ -80,7 +80,7 @@ class App(GameLogic):
 		if self.winner is None:
 			self._player_indicator.draw()
 
-	def select(self, new_click):
+	def select(self, new_click:tuple):
 		"""
 			change the piece selected based on games state and click coordinates
 		"""
@@ -105,7 +105,7 @@ class App(GameLogic):
 		else:
 			self._possible_moves = self.get_moves(self._last_click,self._current_player)
 
-	def move(self, new_click):
+	def move(self, new_click:tuple):
 		"""
 			move selected piece so clicked location (if valid)
 		"""
@@ -123,11 +123,16 @@ class App(GameLogic):
 				# move player
 				self.get_piece(self._last_click).coord = new_click
 				self.get_piece(new_click).opacity = 255
+				
 				self._last_click = None
-				self._current_player = fcts.other_player(self._current_player)
-				self._player_indicator.image = self.textures[self._current_player+"_icon"]
+				if len(self.get_all_takes(new_click,self._current_player)) == 0:
+					self._current_player = fcts.other_player(self._current_player)
+					self._player_indicator.image = self.textures[self._current_player+"_icon"]
+				else:
+					self.select(new_click)
 
-	def update(self, new_click):
+					
+	def update(self):
 		"""
 
 		"""
@@ -138,7 +143,7 @@ class App(GameLogic):
 			except AttributeError:
 				# the piece doesn't exist anymore (killed)
 				pass
-
+		
 		# update gamestate
 		self._ghost_pieces = []
 		if self._last_click is not None:
@@ -146,7 +151,7 @@ class App(GameLogic):
 			for i in self._possible_moves:
 				tmp = Piece(texture=self.textures[self._current_player],scale=self._pieces[0].scale)
 				tmp.coord = i
-				tmp.opacity = 150
+				tmp.opacity = 100
 				self._ghost_pieces.append(tmp)
 
 			# mark new takes
@@ -157,34 +162,7 @@ class App(GameLogic):
 		if self._last_click is None:
 			self._possible_takes = []
 
-		if self.game_is_finished():
-			self.winner = self.get_winner()
-			pieces_left = len(self._pieces)
-			queens = 0
-			for p in self._pieces:
-				if p.promotion:
-					queens += 1
-			self._player_scores[self.winner] += fcts.get_pieces_bonus(pieces_left, queens)
-			if self._player_scores[self.winner] < self._player_scores[fcts.other_player(self.winner)]:
-				# if the winner has a lower score than the loser, swap them
-				tmp_high = self._player_scores[fcts.other_player(self.winner)]
-				tmp_low = self._player_scores[self.winner]
-				self._player_scores[fcts.other_player(self.winner)] = tmp_low
-				self._player_scores[self.winner] = tmp_high
-			if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
-				binary_white = bin(self._player_scores["white"])[:21]
-				self._player_scores["white"] = int(binary_white, 2)
-			if self._player_scores["black"].bit_length() > 21:
-				binary_black = bin(self._player_scores["black"])[:21]
-				self._player_scores["black"] = int(binary_black, 2)
-			self._player_scores[fcts.other_player(self.winner)] *= 0.55  # winner's bonus but reversed
-			self._player_scores[fcts.other_player(self.winner)] = \
-			round(self._player_scores[fcts.other_player(self.winner)], 2)  # avoids floats with lots of 0s
-
-			# add values to scoreboard 
-			self._scoreboard.add(self._player_scores[self.winner],self.winner)
-			self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
-
+			
 	def promotion(self):
 		"""
 			promote all pieces corresponding to criteria
@@ -197,7 +175,7 @@ class App(GameLogic):
 				if i.coord[0] == 0:
 					i.promote()
 
-	def click(self, screen_x, screen_y):
+	def click(self, screen_x:int, screen_y:int):
 		"""
 			receive coords of a click on screen and takes action on it based on current game state
 		"""
@@ -214,33 +192,39 @@ class App(GameLogic):
 
 		self.select(new_click)
 		self.move(new_click)
-		self.update(new_click)
 		self.promotion()
+		self.update()
+
+		if self.game_is_finished():
+			self.end_game()
+
 		self._last_click_time = time() - self._last_click_time
 		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
-	def AI_move(self):
-		"""
-			temporary-- to be replaced by multiplayer turns
-		"""
-		if self._last_click is not None:
-			return
+	def end_game(self):
+		self.winner = self.get_winner()
+		pieces_left = len(self._pieces)
+		queens = 0
+		for p in self._pieces:
+			if p.promotion:
+				queens += 1
+		self._player_scores[self.winner] += fcts.get_pieces_bonus(pieces_left, queens)
+		if self._player_scores[self.winner] < self._player_scores[fcts.other_player(self.winner)]:
+			# if the winner has a lower score than the loser, swap them
+			tmp_high = self._player_scores[fcts.other_player(self.winner)]
+			tmp_low = self._player_scores[self.winner]
+			self._player_scores[fcts.other_player(self.winner)] = tmp_low
+			self._player_scores[self.winner] = tmp_high
+		if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
+			binary_white = bin(self._player_scores["white"])[:21]
+			self._player_scores["white"] = int(binary_white, 2)
+		if self._player_scores["black"].bit_length() > 21:
+			binary_black = bin(self._player_scores["black"])[:21]
+			self._player_scores["black"] = int(binary_black, 2)
+		self._player_scores[fcts.other_player(self.winner)] *= 0.55  # winner's bonus but reversed
+		self._player_scores[fcts.other_player(self.winner)] = \
+		round(self._player_scores[fcts.other_player(self.winner)], 2)  # avoids floats with lots of 0s
 
-		moves = []
-
-		# list all possible moves
-		for i in self._pieces:
-			if i.player == "black":
-				if i.promotion:
-					potential_moves = self.get_moves_queen(i.coord, "black")
-				else:
-					potential_moves = self.get_moves(i.coord, "black")
-				for j in potential_moves:
-					moves.append((i.coord, j))
-
-		# select a random move
-		if len(moves) > 0:
-			move = moves[randint(0,len(moves)-1)]
-			for i in self.get_takes(move[0],move[1],"black"):
-				self.take_piece(i)
-			self.get_piece(move[0]).coord = move[1]
+		# add values to scoreboard 
+		self._scoreboard.add(self._player_scores[self.winner],self.winner)
+		self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
