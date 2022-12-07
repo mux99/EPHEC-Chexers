@@ -11,17 +11,20 @@ class App(GameLogic):
 	"""
 		---TBD---
 	"""
-	def __init__(self):
-		self._current_player = ""
-		self._player_indicator = None
+	def __init__(self,textures,scoreboard = None):
+		self._current_player = "white"
+		self.player_names = {"white": None, "black": None}
 
+		self._player_indicator = pyglet.sprite.Sprite(textures["white_icon"],0,0)
+		self._background = pyglet.sprite.Sprite(textures["background"], 0, 0)
+
+		self._scoreboard = scoreboard
 		self._player_scores = {"white": 0, "black": 0}
-		self._winner = None
-		self.paused = False
+		self.winner = None
 
 		# pieces
-		self._pieces = []  # list all pieces on the board
-		self._ghost_pieces = []  # pieces representing potential moves
+		self._pieces = []
+		self._ghost_pieces = []
 
 		# coords
 		self._last_click = None
@@ -30,12 +33,18 @@ class App(GameLogic):
 		self._possible_moves = []
 
 		# textures
-		self.textures = {"black": None, "white": None}
-		self._scale = 1
+		self.textures = textures
 		self._select_opacity = 180
 
 		# scaling
 		self._tile_height = 1
+		self.height = None
+
+		#fill board
+		for i in fcts.get_starting_pos("white"):
+			self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
+		for i in fcts.get_starting_pos("black"):
+			self._pieces.append(Piece(i,"black",self.textures["black"],self.textures["black_queen"]))
 
 	def __str__(self):
 		return f"board:{self._pieces}"
@@ -44,21 +53,22 @@ class App(GameLogic):
 		"""
 			recalculate and update all scaling of pieces and distances
 		"""
+		self._background.scale = height/self._background.image.height
 		self._tile_height = height / 6.25
-		self._scale = height / 2600
 
 		for i in self._pieces:
-			i.scale = self._scale
+			i.scale = height / 2600
 
 		for i in self._ghost_pieces:
-			i.scale = self._scale
+			i.scale = height / 2600
 
-		self._player_indicator.scale = self._scale / 3
+		self._player_indicator.scale = height / 6500
 
 	def draw_textures(self):
 		"""
 			draw all pieces on the board
 		"""
+		self._background.draw()
 		# draw pieces
 		for i in self._pieces:
 			i.draw(self._tile_height)
@@ -66,23 +76,9 @@ class App(GameLogic):
 		# draw ghosts
 		for i in self._ghost_pieces:
 			i.draw(self._tile_height)
-		self._player_indicator.draw()
-		self._player_indicator.scale = self._scale / 3
-
-	def init_board(self):
-		"""
-			fill board with pieces at their correct starting positions
-		"""
-		pos = fcts.get_starting_pos(8)
-		for i in pos[0]:
-			self._pieces.append(Piece(coord=i, player="white", texture=self.textures["white"],
-										texture2=self.textures["white_queen"], scale=self._scale))
-		for i in pos[1]:
-			self._pieces.append(Piece(coord=i, player="black", texture=self.textures["black"],
-										texture2 = self.textures["black_queen"], scale=self._scale))
-			
-		self._current_player = "white"
-		self._player_indicator = pyglet.sprite.Sprite(self.textures["white_icon"],0,0)
+		
+		if self.winner is None:
+			self._player_indicator.draw()
 
 	def select(self, new_click):
 		"""
@@ -148,7 +144,7 @@ class App(GameLogic):
 		if self._last_click is not None:
 			# generate ghost pieces
 			for i in self._possible_moves:
-				tmp = Piece(texture=self.textures[self._current_player],scale=self._scale)
+				tmp = Piece(texture=self.textures[self._current_player],scale=self._pieces[0].scale)
 				tmp.coord = i
 				tmp.opacity = 150
 				self._ghost_pieces.append(tmp)
@@ -160,30 +156,34 @@ class App(GameLogic):
 
 		if self._last_click is None:
 			self._possible_takes = []
+
 		if self.game_is_finished():
-			self._winner = self.get_winner()
+			self.winner = self.get_winner()
 			pieces_left = len(self._pieces)
 			queens = 0
 			for p in self._pieces:
 				if p.promotion:
 					queens += 1
-			self._player_scores[self._winner] += fcts.get_pieces_bonus(pieces_left, queens)
-			if self._player_scores[self._winner] < self._player_scores[fcts.other_player(self._winner)]:
+			self._player_scores[self.winner] += fcts.get_pieces_bonus(pieces_left, queens)
+			if self._player_scores[self.winner] < self._player_scores[fcts.other_player(self.winner)]:
 				# if the winner has a lower score than the loser, swap them
-				tmp_high = self._player_scores[fcts.other_player(self._winner)]
-				tmp_low = self._player_scores[self._winner]
-				self._player_scores[fcts.other_player(self._winner)] = tmp_low
-				self._player_scores[self._winner] = tmp_high
-			if self._player_scores["white"].bit_length() > 16:  # if the score has more than 16 bits, remove the 16 LMV
-				binary_white = bin(self._player_scores["white"])[:-16]
+				tmp_high = self._player_scores[fcts.other_player(self.winner)]
+				tmp_low = self._player_scores[self.winner]
+				self._player_scores[fcts.other_player(self.winner)] = tmp_low
+				self._player_scores[self.winner] = tmp_high
+			if self._player_scores["white"].bit_length() > 21:  # if the score has more than 21 bits, truncate
+				binary_white = bin(self._player_scores["white"])[:21]
 				self._player_scores["white"] = int(binary_white, 2)
-			if self._player_scores["black"].bit_length() > 16:
-				binary_black = bin(self._player_scores["black"])[:-16]
+			if self._player_scores["black"].bit_length() > 21:
+				binary_black = bin(self._player_scores["black"])[:21]
 				self._player_scores["black"] = int(binary_black, 2)
-			self._player_scores[fcts.other_player(self._winner)] *= 0.75  # winner's bonus but reversed
-			print(F"Score black: {self._player_scores['black']}\n Score white: {self._player_scores['white']}")
-			print("Game finished")
-			exit(0)
+			self._player_scores[fcts.other_player(self.winner)] *= 0.55  # winner's bonus but reversed
+			self._player_scores[fcts.other_player(self.winner)] = \
+			round(self._player_scores[fcts.other_player(self.winner)], 2)  # avoids floats with lots of 0s
+
+			# add values to scoreboard 
+			self._scoreboard.add(self._player_scores[self.winner],self.winner)
+			self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
 
 	def promotion(self):
 		"""
