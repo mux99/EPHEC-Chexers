@@ -155,7 +155,7 @@ class App(GameLogic):
 				
 				# select same piece if a take can be done
 				self._last_click = None
-				if len(self.get_all_takes(new_click,self._current_player)) >= 0 and taken_pieces > 0:
+				if len(self.get_all_takes(new_click,self._current_player)) > 0 and taken_pieces > 0:
 					self.select(new_click)
 					self._continue = True
 				else:

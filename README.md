@@ -52,5 +52,5 @@ GENDEBIEN Jonas
 
 hexagonal grid calculations: [here](https://www.redblobgames.com/grids/hexagons/)
 
-## Known issues
-- when clicking too close to the border between two tiles, the click is considered invalid. thus it is ignored
+## Long term support
+None is planned
