@@ -55,17 +55,20 @@ class Scoreboard():
 		"""
 		self._height = height
 		self._sprite.scale = (height/self._sprite.image.height)*0.8
-		self._sprite.position = (self._win.get_size()[0]//2, self._win.get_size()[1]//2)
+		self._sprite.x = self._win.get_size()[0]//2
+		self._sprite.y = self._win.get_size()[1]//2
 		self._names = []
 		self._scores = []
 		for i in range(len(self._data)):
 			if i >= 11:
 				break
 			self._names.append(pyglet.text.Label(self._data[i][0],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
-			self._names[i].position = (self._sprite.position[0]-(self._sprite.width/2.15),self._sprite.position[1]+((height/txt_h)*(3-i)))
+			self._names[i].x = self._sprite.x-(self._sprite.width/2.15)
+			self._names[i].y = self._sprite.y+((height/txt_h)*(3-i))
 			
 			self._scores.append(pyglet.text.Label(self._data[i][2],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
-			self._scores[i].position = (self._sprite.position[0]-(self._sprite.width/6.25),self._sprite.position[1]+((height/txt_h)*(3-i)))
+			self._scores[i].x = self._sprite.x-(self._sprite.width/6.25)
+			self._scores[i].y = self._sprite.y+((height/txt_h)*(3-i))
 	
 	def keypress(self,key:str):
 		""" call to write a name
