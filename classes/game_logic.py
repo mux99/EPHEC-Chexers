@@ -101,19 +101,32 @@ class GameLogic:
 		# forward moves
 		for i in valid_moves[player]:
 			tmp = fcts.vector_add(coord, i)
+
+			#warp
 			warp_coord = fcts.warp(tmp)
 			if warp_coord is not None and not self.is_piece(warp_coord):
-				out.append(warp_coord)
+				out.append((warp_coord,len(self.get_takes(coord,warp_coord,player))))
+
+			#normal
 			if not self.is_piece(tmp) and fcts.validate_coords(tmp):
-				out.append(tmp)
+				out.append((tmp,len(self.get_takes(coord,tmp,player))))
 
 		# back takes
 		for i in valid_back_moves[player]:
 			tmp = fcts.vector_add(coord, i)
-			if not self.is_piece(tmp) and fcts.validate_coords(tmp) and len(self.get_takes(coord, tmp, player)) != 0:
-				out.append(tmp)
+			n = len(self.get_takes(coord, tmp, player))
+			if not self.is_piece(tmp) and fcts.validate_coords(tmp) and n > 0:
+				out.append(tmp,n)
 
-		return out
+		# sort moves by number of takes
+		out = sorted(out,key=lambda i: -i[1])
+		i = 0
+		while i < len(out):
+			if out[i][1] < out[0][1]:
+				del out[i]
+			else:
+				i += 1
+		return [x[0] for x in out]
 
 	def get_moves_queen(self, coord, player):
 		"""
@@ -127,22 +140,31 @@ class GameLogic:
 			tmp = fcts.vector_add(coord, i)
 			warp_coord = fcts.warp(tmp)
 			if warp_coord is not None and not self.is_piece(warp_coord):
-				out.append(warp_coord)
+				out.append((warp_coord,len(self.get_takes(coord,warp_coord,player))))
 				warp_coords[warp_coord] = i
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
-				out.append(tmp)
+				out.append((tmp,len(self.get_takes(coord,tmp,player))))
 				tmp = fcts.vector_add(tmp, i)
 				warp_coord = fcts.warp(tmp)
 				if warp_coord is not None and not self.is_piece(warp_coord):
-					out.append(warp_coord)
+					out.append((warp_coord,len(self.get_takes(coord,warp_coord,player))))
 					warp_coords[warp_coord] = i
+
 		for w, m in warp_coords.items():
 			tmp = fcts.vector_add(w, m)
 			while not self.is_piece(tmp) and fcts.validate_coords(tmp):
-				out.append(tmp)
+				out.append((tmp,len(self.get_takes(coord,tmp,player))))
 				tmp = fcts.vector_add(tmp, m)
 
-		return out
+		# sort moves by number of takes
+		out = sorted(out,key=lambda i: -i[1])
+		i = 0
+		while i < len(out):
+			if out[i][1] < out[0][1]:
+				del out[i]
+			else:
+				i += 1
+		return [x[0] for x in out]
 
 	
 	def get_winner(self):
