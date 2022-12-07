@@ -183,7 +183,7 @@ class App(GameLogic):
 
 			# add values to scoreboard 
 			self._scoreboard.add(self._player_scores[self.winner],self.winner)
-			#self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
+			self._scoreboard.add(self._player_scores[fcts.other_player(self.winner)],fcts.other_player(self.winner))
 
 	def promotion(self):
 		"""
