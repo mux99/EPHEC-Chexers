@@ -125,11 +125,11 @@ class App(GameLogic):
 				self.get_piece(new_click).opacity = 255
 				
 				self._last_click = None
-				if len(self.get_all_takes(new_click,self._current_player)) == 0:
+				if len(self.get_all_takes(new_click,self._current_player)) >= 0 and taken_pieces > 0:
+					self.select(new_click)
+				else:
 					self._current_player = fcts.other_player(self._current_player)
 					self._player_indicator.image = self.textures[self._current_player+"_icon"]
-				else:
-					self.select(new_click)
 
 					
 	def update(self):
