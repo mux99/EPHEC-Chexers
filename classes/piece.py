@@ -1,4 +1,13 @@
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
+
 import pyglet
+
 from bin.fcts import board_to_screen
 
 
@@ -15,9 +24,6 @@ class Piece:
 		:promotion: --debug purposes--
 		:scale: scaling factor of the sprite
 		"""
-		self._x = coord[0]
-		self._y = coord[1]
-		self._z = coord[2]
 		self._coord = coord
 		self._player = player
 		self._promotion = promotion
@@ -32,7 +38,7 @@ class Piece:
 		return str(self)
 
 	def __str__(self):
-		return f"{self._player}:({self._x},{self._y},{self._z})"
+		return f"{self._player}:{self._coord}"
 
 	def promote(self):
 		""" promotion of piece to queen
@@ -46,7 +52,7 @@ class Piece:
 	def draw(self, tile_height):
 		""" draw sprite of the piece
 		"""
-		pos = board_to_screen(self._x, self._y, self._z, tile_height)
+		pos = board_to_screen(self._coord[0], self._coord[1], tile_height)
 		self._sprite.x = pos[0]
 		self._sprite.y = pos[1]
 		self._sprite.draw()
@@ -76,9 +82,6 @@ class Piece:
 		"""
 		:coord: (x,y,z) valid coordonates of the board, the piece's coordonates
 		"""
-		self._x = coord[0]
-		self._y = coord[1]
-		self._z = coord[2]
 		self._coord = coord
 
 	@scale.setter

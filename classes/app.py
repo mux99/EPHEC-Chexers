@@ -1,12 +1,18 @@
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
+
+from time import time
+import pyglet
+
 import bin.fcts as fcts
 from classes.piece import Piece
 from classes.game_logic import GameLogic
 from classes.scoreboard import Scoreboard
-
-from time import time
-from random import randint
-import pyglet
-
 
 class App(GameLogic):
 	"""
@@ -56,6 +62,11 @@ class App(GameLogic):
 		self._tile_height = 1
 		self.height = None
 
+		#fill board (testing positions)
+		# for i in fcts.test2_get_starting_pos("white"):
+		# 	self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
+		# for i in fcts.test2_get_starting_pos("black"):
+		# 	self._pieces.append(Piece(i,"black",self.textures["black"],self.textures["black_queen"]))
 		#fill board
 		for i in fcts.get_starting_pos("white"):
 			self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))

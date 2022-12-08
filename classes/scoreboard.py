@@ -1,3 +1,11 @@
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
+
 import pyglet
 
 from bin.file_intercation import read_csv
