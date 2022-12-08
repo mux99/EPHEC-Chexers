@@ -8,7 +8,7 @@
 
 import pyglet
 
-from bin.file_intercation import read_csv
+from bin.file_intercation import read_csv, is_file, create_file
 
 txt_h = 19.6
 font_h = 35
@@ -26,6 +26,7 @@ class Scoreboard():
 		self._stack = []
 		self.delay = 0
 		self._file = filename
+		create_file(filename)
 		self._data = list(read_csv(filename))[:10]
 		self._sprite = pyglet.sprite.Sprite(img, 0, 0)
 		self._names = [None for _ in range(len(self._data))]
