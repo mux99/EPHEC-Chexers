@@ -1,5 +1,12 @@
-from math import sqrt, ceil, pi
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
 
+from math import sqrt, ceil, pi
 
 def screen_to_board(x:int, y:int, tile_height:float):
 	""" translate the coord on screen to x,y,z hexagonal axis
@@ -54,11 +61,13 @@ def other_player(player:str):
 		return "black"
 
 
-def board_to_screen(x:int, y:int, z:int, tile_height:float):
+def board_to_screen(x:int, y:int, tile_height:float):
 	""" translate the coords of hex tiles to their screen coords
 
-	:x, y, z: valid board coordonate
+	:x, y: valid board coordonate (Z is not needed)
 	:tile_height: the height of a tile on the board in pixel
+
+	see readme.md for infos on the coordonates system
 	"""
 	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
@@ -94,6 +103,17 @@ def test_get_starting_pos(player):
 		return [(4, -4, 0), (4, -6, 2), (5, -5, 0), (5, -6, 1), (3, -4, 1), (3, -5, 2),
 				(2, -6, 4), (5, -8, 3), (2, -2, 0), (3, -2, -1), (3, -7, 4), (6, -8, 2), (1, -3, 2),
 				(1, -4, 3), (5, -3, -2), (6, -4, -2)]
+	return []
+
+def test2_get_starting_pos(player):
+	""" made for testing/debugging purpose only
+
+	:player: 'white' or 'black' is the current player
+	"""
+	if player == "white":
+		return [(4, -5, 1)]
+	elif player == "black":
+		return [(5, -5, 0)]
 	return []
 
 

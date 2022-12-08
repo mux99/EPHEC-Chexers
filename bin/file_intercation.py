@@ -1,3 +1,11 @@
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
+
 def read_csv(filename):
     """ read a csv file and return matrix of string
     
