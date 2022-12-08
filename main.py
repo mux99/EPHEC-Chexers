@@ -72,6 +72,9 @@ if __name__ == '__main__':
 				"background": pyglet.resource.image("img/board.png"),
 				"scoreboard": pyglet.resource.image("img/scoreboard.png")}
 
+	# window icon
+	win.set_icon(pyglet.resource.image("img/logo32.png"))
+
 	# center textures on themselves (most of them anyway)
 	for i in atlas.keys():
 		if i not in ["white_icon","black_icon","background"]:
