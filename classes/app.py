@@ -44,7 +44,7 @@ class App(GameLogic):
 
 		# coords
 		self._last_click = None
-		self._last_click_time = 0
+		#self._last_click_time = 0
 		self._possible_takes = []
 		self._possible_moves = []
 
@@ -122,7 +122,7 @@ class App(GameLogic):
 
 		# select new piece
 		self._last_click = new_click
-		self._last_click_time = time()
+		#self._last_click_time = time()
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
 		if self.get_piece(self._last_click).promotion:
@@ -236,8 +236,8 @@ class App(GameLogic):
 		if self.is_game_finished():
 			self.end_game()
 
-		self._last_click_time = time() - self._last_click_time
-		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
+		#self._last_click_time = time() - self._last_click_time
+		#self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
 	def end_game(self):
 		""" is called a the end of the game
