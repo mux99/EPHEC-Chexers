@@ -1,7 +1,13 @@
 # EPHEC-T201-Dammes
 
 ## Synopsis
-this is a school project, meant to create a game of *checkers* on an hexagonal grid.
+This is a school project, meant to create a game of *checkers* with extra rules. Apparently this group don't seem to bother with easy, so we went with an hexagonal grid. On top of that, we added teleportation (yes otherwise it's not confusing enough). Finally we went with a graphical interface despite the requirements beeing only for a console base game. We tried it, it's unplayable in console.
+
+### 'Client' Needs
+The client (the teacher realy) wanted a game of checkers ot play locally with a friend. It also needed to give a score to each players and save them to a file. Yes it is the sole reason we added a scoreboard. Appart from that we were free.
+
+### Desision Making
+*---tbd---*
 
 ## Game rules
 - the whites begin
@@ -51,6 +57,3 @@ GENDEBIEN Jonas
 ## Acknowledgments
 
 hexagonal grid calculations: [here](https://www.redblobgames.com/grids/hexagons/)
-
-## Long term support
-None is planned
