@@ -1,11 +1,18 @@
-import bin.fcts as fcts
-from classes.piece import Piece
-from classes.game_logic import GameLogic
-from classes.scoreboard import Scoreboard
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
 
 from time import time
 import pyglet
 
+import bin.fcts as fcts
+from classes.piece import Piece
+from classes.game_logic import GameLogic
+from classes.scoreboard import Scoreboard
 
 class App(GameLogic):
 	"""
@@ -43,7 +50,7 @@ class App(GameLogic):
 
 		# coords
 		self._last_click = None
-		self._last_click_time = 0
+		#self._last_click_time = 0
 		self._possible_takes = []
 		self._possible_moves = []
 
@@ -55,6 +62,11 @@ class App(GameLogic):
 		self._tile_height = 1
 		self.height = None
 
+		#fill board (testing positions)
+		# for i in fcts.test2_get_starting_pos("white"):
+		# 	self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
+		# for i in fcts.test2_get_starting_pos("black"):
+		# 	self._pieces.append(Piece(i,"black",self.textures["black"],self.textures["black_queen"]))
 		#fill board
 		for i in fcts.get_starting_pos("white"):
 			self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
@@ -121,7 +133,7 @@ class App(GameLogic):
 
 		# select new piece
 		self._last_click = new_click
-		self._last_click_time = time()
+		#self._last_click_time = time()
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
 		if self.get_piece(self._last_click).promotion:
@@ -154,7 +166,7 @@ class App(GameLogic):
 				
 				# select same piece if a take can be done
 				self._last_click = None
-				if len(self.get_all_takes(new_click,self._current_player)) >= 0 and taken_pieces > 0:
+				if len(self.get_all_takes(new_click,self._current_player)) > 0 and taken_pieces > 0:
 					self.select(new_click)
 					self._continue = True
 				else:
@@ -235,8 +247,8 @@ class App(GameLogic):
 		if self.is_game_finished():
 			self.end_game()
 
-		self._last_click_time = time() - self._last_click_time
-		self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
+		#self._last_click_time = time() - self._last_click_time
+		#self._player_scores[self._current_player] += fcts.get_time_bonus(self._last_click_time)
 
 	def end_game(self):
 		""" is called at the end of the game

@@ -51,3 +51,6 @@ GENDEBIEN Jonas
 ## Acknowledgments
 
 hexagonal grid calculations: [here](https://www.redblobgames.com/grids/hexagons/)
+
+## Long term support
+None is planned

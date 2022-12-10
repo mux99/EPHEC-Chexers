@@ -1,6 +1,14 @@
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
+
 import pyglet
 
-from bin.file_intercation import read_csv
+from bin.file_intercation import read_csv, is_file, create_file
 
 txt_h = 19.6
 font_h = 35
@@ -18,6 +26,7 @@ class Scoreboard:
 		self._stack = []
 		self.delay = 0
 		self._file = filename
+		create_file(filename)
 		self._data = list(read_csv(filename))[:10]
 		self._sprite = pyglet.sprite.Sprite(img, 0, 0)
 		self._names = [None for _ in range(len(self._data))]
@@ -55,17 +64,20 @@ class Scoreboard:
 		"""
 		self._height = height
 		self._sprite.scale = (height/self._sprite.image.height)*0.8
-		self._sprite.position = (self._win.get_size()[0]//2, self._win.get_size()[1]//2)
+		self._sprite.x = self._win.get_size()[0]//2
+		self._sprite.y = self._win.get_size()[1]//2
 		self._names = []
 		self._scores = []
 		for i in range(len(self._data)):
 			if i >= 11:
 				break
 			self._names.append(pyglet.text.Label(self._data[i][0],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
-			self._names[i].position = (self._sprite.position[0]-(self._sprite.width/2.15),self._sprite.position[1]+((height/txt_h)*(3-i)))
+			self._names[i].x = self._sprite.x-(self._sprite.width/2.15)
+			self._names[i].y = self._sprite.y+((height/txt_h)*(3-i))
 			
 			self._scores.append(pyglet.text.Label(self._data[i][2],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
-			self._scores[i].position = (self._sprite.position[0]-(self._sprite.width/6.25),self._sprite.position[1]+((height/txt_h)*(3-i)))
+			self._scores[i].x = self._sprite.x-(self._sprite.width/6.25)
+			self._scores[i].y = self._sprite.y+((height/txt_h)*(3-i))
 	
 	def keypress(self,key:str):
 		""" called to write a name

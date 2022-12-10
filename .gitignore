@@ -128,3 +128,5 @@ classes/App.py
 classes/Piece.py
 
 .vscode/
+
+.idea/

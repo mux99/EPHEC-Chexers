@@ -1,8 +1,14 @@
-import bin.fcts as fcts
+# checkers on hexagonal grid
+#	for details see readme.md
+#
+# Dourov Maxime   
+# Cruquenaire Achille   
+# Gendbeien Jonas
+#
 
 from re import findall
 
-
+import bin.fcts as fcts
 from classes.piece import Piece
 
 
