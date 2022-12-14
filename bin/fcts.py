@@ -40,6 +40,10 @@ def vector_add(a:tuple, b:tuple):
 	""" add 2 vectors together
 	:a b: the vectors must have the same number of dimensions
 	"""
+	if type(a) != tuple or type(b) != tuple:
+		raise TypeError
+	if len(a) != len(b):
+		raise IndexError
 	out = []
 	for i in range(len(a)):
 		out.append(a[i]+b[i])
@@ -50,6 +54,10 @@ def vector_sub(a:tuple, b:tuple):
 	""" subtract 2 vectors together
 	:a b: the vectors must have the same number of dimensions
 	"""
+	if type(a) != tuple or type(b) != tuple:
+		raise TypeError
+	if len(a) != len(b):
+		raise IndexError
 	out = []
 	for i in range(len(a)):
 		out.append(a[i]-b[i])
@@ -60,6 +68,10 @@ def vector_cross_product(a:tuple, b:tuple):
 	""" find the cross product of 2 vectors
 	:a b: the vectors must have 3 dimensions
 	"""
+	if type(a) != tuple or type(b) != tuple:
+		raise TypeError
+	if len(a) !=  3 or len(b) != 3:
+		raise IndexError
 	return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 
 
@@ -130,7 +142,7 @@ def test2_get_starting_pos(player):
 	return []
 
 
-def validate_coords(coords):
+def validate_coords(coords: tuple) -> bool:
 	""" True if the coordinate are valid, False if not
 
 	:coords: (x,y,z) valid coordinates of the board
@@ -143,26 +155,11 @@ def validate_coords(coords):
 		if x = 7 -> y = -12 to -2
 		z isn't relevant since it depends on the value of x and y at the same time
 	"""
-	# x = coords[0]
-	# y = coords[1]
-	# z = coords[2]
-
-	# if (x + y + z) != 0:
-	# 	print("Illegal Coordinates")
-	# 	return False
-
-	# if x == 0:
-	# 	return -8 <= y <= 2
-	# elif x in (1, 2):
-	# 	return -9 <= y <= 1
-	# elif x in (3, 4):
-	# 	return -10 <= y <= 0
-	# elif x in (5, 6):
-	# 	return -11 <= y <= -1
-	# elif x == 7:
-	# 	return -12 <= y <= -2
-	# else:
-	# 	return False
+	if type(coords) != tuple:
+		raise TypeError
+	if len(coords) != 3:
+		raise IndexError
+	
 	if coords[0] < 0 or coords[0] > 7:
 		return False
 	return True

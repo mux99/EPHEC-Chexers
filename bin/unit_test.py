@@ -1,39 +1,59 @@
 import unittest
 
 from fcts import *
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+from file_interaction import *
 
-class TestVectors(unittest.TestCase):
+class MyTestCaseM(unittest.TestCase):
     def test_add(self):
         self.assertEqual(vector_add((1,2,3),(4,5,1)), (5,7,4))
-        self.assertEqual(vector_add((0,0,0),(1,2,3)), (1,2,3))
+        self.assertEqual(vector_add((0,0),(1,2)), (1,2))
+        self.assertRaises(TypeError, vector_add, 'a', (0,0,0))
+        self.assertRaises(TypeError, vector_add, (0,0,0), 'a')
+        self.assertRaises(IndexError, vector_add, (0,0,0), (0,0))
+
     def test_sub(self):
         self.assertEqual(vector_sub((1,2,3),(4,5,6)), (-3,-3,-3))
         self.assertEqual(vector_sub((0,0,0),(1,2,3)), (-1,-2,-3))
+        self.assertRaises(TypeError, vector_sub, 'a', (0,0,0))
+        self.assertRaises(TypeError, vector_sub, (0,0,0), 'a')
+        self.assertRaises(IndexError, vector_sub, (0,0,0), (0,0))
 
     def test_cross_product(self):
         self.assertEqual(vector_cross_product((1, 2, 3),(4, 5, 6)), (-3, 6, -3))
         self.assertEqual(vector_cross_product((0, 0, 0),(1, 2, 3)), (0, 0, 0))
+        self.assertRaises(TypeError, vector_cross_product, 'a', (0,0,0))
+        self.assertRaises(TypeError, vector_cross_product, (0,0,0), 'a')
+        self.assertRaises(IndexError, vector_cross_product, (0,0,0), (0,0))
+        self.assertRaises(IndexError, vector_cross_product, (0,0), (0,0))
+
+    def test_is_file(self):
+        outfile_path = "testtesttest.test"
+        try:
+            self.assertTrue(outfile_path)
+            open(outfile_path, 'w')
+            self.assertTrue(is_file(outfile_path))
+        finally:
+            os.remove(outfile_path)
+        self.assertRaises(TypeError,4)
+        self.assertRaises(TypeError,["p","a","t","h"])
+
+    def test_create_file(self):
+        outfile_path = "testtesttest.test"
+        try:
+            self.assertFalse(is_file(outfile_path))
+            create_file(outfile_path)
+            self.assertTrue(is_file(outfile_path))
+        finally:
+            os.remove(outfile_path)
+        self.assertRaises(TypeError,4)
+        self.assertRaises(TypeError,["p","a","t","h"])
 
 class MyTestCaseH(unittest.TestCase):
     def test_validate_coord(self):
         vec1 = (1, 2, -3)
         vec2 = (-15, 17, -2)
         vec3 = (0, -6, 6)
-        self.assertFalse(validate_coords(vec1))
+        self.assertTrue(validate_coords(vec1))
         self.assertFalse(validate_coords(vec2))
         self.assertTrue(validate_coords(vec3))
         self.assertRaises(TypeError, validate_coords, 2)
@@ -90,13 +110,6 @@ class MyTestCaseH(unittest.TestCase):
         self.assertRaises(TypeError, is_the_right_parallel, 7, "a")
         self.assertRaises(TypeError, is_the_right_parallel, [7,5], {"a": 2})
         self.assertRaises(ValueError, is_the_right_parallel, (1,4,7,9), (1,5))
-class TestFiles(unittest.TestCase):
-    def test_is_file(self):
-        pass
-    def test_create_file(self):
-        pass
-    def test_readcsv(self):
-        pass
 
 # class MyTestCase(unittest.TestCase):
 #     def test_something(self):
