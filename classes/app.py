@@ -125,7 +125,7 @@ class App(GameLogic):
 			return
 		
 		# player can only select a better or equal move
-		if (len(self.get_all_takes(new_click,self._current_player)) <= len(self._possible_takes) and self._last_click is not None):
+		if (len(self.get_all_takes(new_click,self._current_player)) < len(self._possible_takes) and self._last_click is not None):
 			return
 
 		# something was already selected
@@ -173,6 +173,7 @@ class App(GameLogic):
 					self._continue = True
 				else:
 					self._current_player = fcts.other_player(self._current_player)
+					self.select(self.get_preselection(self._current_player))
 					self._player_indicator.image = self.textures[self._current_player+"_icon"]
 					self._continue = False
 

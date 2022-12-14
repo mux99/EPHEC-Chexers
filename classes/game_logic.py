@@ -225,3 +225,15 @@ class GameLogic:
         # black_pieces = [p for p in self._pieces if p.player == "black"]
         # white_pieces = [p for p in self._pieces if p.player == "white"]
         # return len(black_pieces) == 0 or len(white_pieces) == 0
+
+    def get_preselection(self,player):
+        """ return the coords of the preselected piece if any
+        :player: 'white' or 'black' is the current player
+        """
+        out = []
+        for p in self._pieces:
+            if p.player == player:
+                out.append((p.coord,len(self.get_all_takes(p.coord,player))))
+        out = sorted(out, key=lambda i: -i[1])
+        if len(out) > 0 and out[0][1] > 0:
+            return out[0][0]
