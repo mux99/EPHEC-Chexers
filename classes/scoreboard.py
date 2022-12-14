@@ -8,7 +8,7 @@
 
 import pyglet
 
-from bin.file_intercation import read_csv, is_file, create_file
+from bin.file_interaction import read_csv, is_file, create_file
 
 txt_h = 19.6
 font_h = 35
@@ -40,7 +40,7 @@ class Scoreboard():
 		:player: 'white' or 'black' is the current player
 		"""
 		self._stack.append(["",player,str(score)])
-		if len(self._stack) == 1:
+		if len(self._stack) > 1:
 			self._data.append(self._stack[0])
 			self._names.append(None)
 			self._scores.append(None)
@@ -69,7 +69,7 @@ class Scoreboard():
 		self._names = []
 		self._scores = []
 		for i in range(len(self._data)):
-			if i >= 11:
+			if i > 10:
 				break
 			self._names.append(pyglet.text.Label(self._data[i][0],font_size=height/font_h,font_name='Montserrat Alternates',anchor_y='center',color=(0,0,0,255)))
 			self._names[i].x = self._sprite.x-(self._sprite.width/2.15)
