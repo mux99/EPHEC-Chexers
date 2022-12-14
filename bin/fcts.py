@@ -21,6 +21,18 @@ def screen_to_board(x:int, y:int, tile_height:float):
 	board_y = - board_x - board_z
 	return (round(board_x), round(board_y), round(board_z))
 
+def board_to_screen(x:int, y:int, tile_height:float):
+	""" translate the coords of hex tiles to their screen coords
+
+	:x, y: valid board coordonate (Z is not needed)
+	:tile_height: the height of a tile on the board in pixel
+
+	see readme.md for infos on the coordonates system
+	"""
+	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
+	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
+	return (round(screen_x), round(screen_y))
+
 
 def vector_add(a:tuple, b:tuple):
 	""" add 2 vectors together
@@ -69,20 +81,6 @@ def other_player(player:str):
 	elif player == "white":
 		return "black"
 
-
-def board_to_screen(x:int, y:int, tile_height:float):
-	""" translate the coords of hex tiles to their screen coords
-
-	:x, y: valid board coordonate (Z is not needed)
-	:tile_height: the height of a tile on the board in pixel
-
-	see readme.md for infos on the coordonates system
-	"""
-	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
-	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
-	return (round(screen_x), round(screen_y))
-
-
 def get_starting_pos(player):
 	""" generate a list of starting locations for given player
 
@@ -122,7 +120,7 @@ def test2_get_starting_pos(player):
 	if player == "white":
 		return [(4, -5, 1)]
 	elif player == "black":
-		return [(5, -5, 0)]
+		return [(6, -6, 0)]
 	return []
 
 
@@ -139,26 +137,29 @@ def validate_coords(coords):
 		if x = 7 -> y = -12 to -2
 		z isn't relevant since it depends on the value of x and y at the same time
 	"""
-	x = coords[0]
-	y = coords[1]
-	z = coords[2]
+	# x = coords[0]
+	# y = coords[1]
+	# z = coords[2]
 
-	if (x + y + z) != 0:
-		print("Illegal Coordinates")
-		return False
+	# if (x + y + z) != 0:
+	# 	print("Illegal Coordinates")
+	# 	return False
 
-	if x == 0:
-		return -8 <= y <= 2
-	elif x in (1, 2):
-		return -9 <= y <= 1
-	elif x in (3, 4):
-		return -10 <= y <= 0
-	elif x in (5, 6):
-		return -11 <= y <= -1
-	elif x == 7:
-		return -12 <= y <= -2
-	else:
+	# if x == 0:
+	# 	return -8 <= y <= 2
+	# elif x in (1, 2):
+	# 	return -9 <= y <= 1
+	# elif x in (3, 4):
+	# 	return -10 <= y <= 0
+	# elif x in (5, 6):
+	# 	return -11 <= y <= -1
+	# elif x == 7:
+	# 	return -12 <= y <= -2
+	# else:
+	# 	return False
+	if coords[0] < 0 or coords[0] > 7:
 		return False
+	return True
 
 
 def warp(coords):
@@ -169,10 +170,9 @@ def warp(coords):
 	:return: warped coordonates, none if cannot warp
 	"""
 	tmp = (0,coords[1]+ceil(coords[0]/2),coords[2]+floor(coords[0]/2))
-	print("tmp: ",tmp)
-	if tmp in [(0,-9,9),(0,-10,10)]:
+	if tmp[1] <= -9 and tmp[2] >= 9:
 		return vector_add(coords, (0, 11, -11))
-	elif tmp in [(0,3,-3),(0,4,-4)]:
+	elif tmp[1] >= 3 and tmp[2] <= -3:
 		return vector_add(coords, (0, -11, 11))
 	return coords
 

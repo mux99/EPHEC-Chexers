@@ -8,7 +8,7 @@
 
 import pyglet
 
-from bin.fcts import board_to_screen
+from bin.fcts import board_to_screen, warp
 
 
 class Piece:
@@ -24,7 +24,7 @@ class Piece:
 		:promotion: --debug purposes--
 		:scale: scaling factor of the sprite
 		"""
-		self._coord = coord
+		self._coord = warp(coord)
 		self._player = player
 		self._promotion = promotion
 
@@ -82,7 +82,7 @@ class Piece:
 		"""
 		:coord: (x,y,z) valid coordonates of the board, the piece's coordonates
 		"""
-		self._coord = coord
+		self._coord = warp(coord)
 
 	@scale.setter
 	def scale(self, scale: float):
