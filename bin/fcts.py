@@ -6,7 +6,7 @@
 # Gendbeien Jonas
 #
 
-from math import sqrt, ceil, pi
+from math import sqrt, ceil, pi, floor
 
 def screen_to_board(x:int, y:int, tile_height:float):
 	""" translate the coord on screen to x,y,z hexagonal axis
@@ -168,15 +168,13 @@ def warp(coords):
 
 	:return: warped coordonates, none if cannot warp
 	"""
-	x = coords[0]
-	y = coords[1]
-	z = coords[2]
-
-	if 1 <= x <= 7 and 2 >= y >= -1:
-		return vector_add(coords, (0, -11, 11)) if validate_coords(vector_add(coords, (0, -11, 11))) else None
-	elif 0 <= x <= 6 and -12 <= y <= -9:
-		return vector_add(coords, (0, 11, -11)) if validate_coords(vector_add(coords, (0, 11, -11))) else None
-	return None
+	tmp = (0,coords[1]+ceil(coords[0]/2),coords[2]+floor(coords[0]/2))
+	print("tmp: ",tmp)
+	if tmp in [(0,-9,9),(0,-10,10)]:
+		return vector_add(coords, (0, 11, -11))
+	elif tmp in [(0,3,-3),(0,4,-4)]:
+		return vector_add(coords, (0, -11, 11))
+	return coords
 
 
 def takes_score(pieces_taken):

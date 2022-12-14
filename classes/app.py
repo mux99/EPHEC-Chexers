@@ -231,7 +231,7 @@ class App(GameLogic):
 			or click coordonates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
-		#print(new_click)
+		# print("click: ",new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):

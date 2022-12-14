@@ -130,12 +130,7 @@ class GameLogic:
 
         # forward moves
         for i in valid_moves[player]:
-            tmp = fcts.vector_add(coord, i)
-
-            # warp
-            warp_coord = fcts.warp(tmp)
-            if warp_coord is not None and not self.is_piece(warp_coord):
-                out.append(warp_coord)
+            tmp = fcts.warp(fcts.vector_add(coord, i))
 
             # normal
             if not self.is_piece(tmp) and fcts.validate_coords(tmp):
@@ -163,24 +158,11 @@ class GameLogic:
         warp_coords = {}
 
         for i in valid_moves:
-            tmp = fcts.vector_add(coord, i)
-            warp_coord = fcts.warp(tmp)
-            if warp_coord is not None and not self.is_piece(warp_coord):
-                out.append(warp_coord)
-                warp_coords[warp_coord] = i
+            tmp = fcts.warp(fcts.vector_add(coord, i))
             while not self.is_piece(tmp) and fcts.validate_coords(tmp):
                 out.append(tmp)
                 tmp = fcts.vector_add(tmp, i)
-                warp_coord = fcts.warp(tmp)
-                if warp_coord is not None and not self.is_piece(warp_coord):
-                    out.append(warp_coord)
-                    warp_coords[warp_coord] = i
 
-        for w, m in warp_coords.items():
-            tmp = fcts.vector_add(w, m)
-            while not self.is_piece(tmp) and fcts.validate_coords(tmp):
-                out.append(tmp)
-                tmp = fcts.vector_add(tmp, m)
         return out
 
     def filter_moves(self, coord, player, moves):
@@ -229,6 +211,8 @@ class GameLogic:
     def get_preselection(self,player):
         """ return the coords of the preselected piece if any
         :player: 'white' or 'black' is the current player
+
+        :return: the coord of the piece to be selected or None
         """
         out = []
         for p in self._pieces:
