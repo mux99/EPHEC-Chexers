@@ -23,19 +23,28 @@ def screen_to_board(x:int, y:int, tile_height:float):
 
 
 def vector_add(a:tuple, b:tuple):
-	""" add 2 3D vectors together
+	""" add 2 vectors together
+	:a b: the vectors must have the same number of dimensions 
 	"""
-	return (a[0]+b[0], a[1]+b[1], a[2]+b[2])
+	out = []
+	for i in range(len(a)):
+		out.append(a[i]+b[i])
+	return tuple(out)
 
 
 def vector_sub(a:tuple, b:tuple):
-	""" subtract 2 3D vectors together
+	""" subtract 2 vectors together
+	:a b: the vectors must have the same number of dimensions
 	"""
-	return (a[0]-b[0], a[1]-b[1], a[2]-b[2])
+	out = []
+	for i in range(len(a)):
+		out.append(a[i]-b[i])
+	return tuple(out)
 
 
 def vector_cross_product(a:tuple, b:tuple):
-	""" find the cross product of 2 3D vectors
+	""" find the cross product of 2 vectors
+	:a b: the vectors must have 3 dimentions
 	"""
 	return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 
