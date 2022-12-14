@@ -123,19 +123,21 @@ class App(GameLogic):
 		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
 			return
+		
+		# player can only select a better or equal move
+		if (len(self.get_all_takes(new_click,self._current_player)) < len(self._possible_takes) and self._last_click is not None):
+			return
 
 		# something was already selected
 		if self._last_click is not None:
 			self.get_piece(self._last_click).opacity = 255
-			# remove previous takes
-			for i in self._possible_takes:
-				self.get_piece(i).opacity = 255
 
 		# select new piece
 		self._last_click = new_click
 		#self._last_click_time = time()
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
+		# update possibe moves
 		if self.get_piece(self._last_click).promotion:
 			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves_queen(self._last_click))
 		else:
@@ -171,6 +173,7 @@ class App(GameLogic):
 					self._continue = True
 				else:
 					self._current_player = fcts.other_player(self._current_player)
+					self.select(self.get_preselection(self._current_player))
 					self._player_indicator.image = self.textures[self._current_player+"_icon"]
 					self._continue = False
 
@@ -228,7 +231,7 @@ class App(GameLogic):
 			or click coordonates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
-		#print(new_click)
+		# print("click: ",new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):

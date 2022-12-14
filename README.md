@@ -13,7 +13,7 @@ Image![alt text](https://cdn.discordapp.com/attachments/1031895995648323606/1042
 - a queen can move any number of free tiles, in any directions
 - when on a green tile, a piece can warp to the other side of the board
 - when multiples takes in a row can be made, they are mandatory
-- (TBD) when a player can take a piece, he must do so
+- when a player can take a piece, he must do so
 
 at the end of the game, the scoreboard (local) will aprear:
 - enter the name of the winner
