@@ -15,8 +15,8 @@ from classes.app import App
 from classes.scoreboard import Scoreboard
 
 # add and load custom font for scoreboard
-font.add_file('fonts/MontserratAlternates-SemiBold.ttf')
-action_man = font.load('Monserrat Alternates Semi Bold', 16)
+#font.add_file('fonts/MontserratAlternates-SemiBold.ttf')
+#action_man = font.load('Monserrat Alternates Semi Bold', 16)
 
 # generate a new windw
 win = pyglet.window.Window(resizable=True, caption="Checkers")

@@ -29,10 +29,7 @@ def read_csv(filename):
 def is_file(path):
     if type(path) != str:
         raise TypeError
-    if os.path.exists(path):
-        return True
-    else:
-        return False
+    return os.path.exists(path)
 
 def create_file(path):
     if type(path) != str:
