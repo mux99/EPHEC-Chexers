@@ -14,6 +14,8 @@ def screen_to_board(x:int, y:int, tile_height:float):
 	:y: the y value in pixel of the click position
 	:tile_height: the height of a tile on the board in pixel
 	"""
+	if not isinstance(x, int) or not isinstance(y, int):
+		raise TypeError
 	x -= sqrt(3)*tile_height * 1.25
 	y -= tile_height/2
 	board_x = ((2*y)/3)/(tile_height/2)
@@ -24,7 +26,7 @@ def screen_to_board(x:int, y:int, tile_height:float):
 
 def vector_add(a:tuple, b:tuple):
 	""" add 2 vectors together
-	:a b: the vectors must have the same number of dimensions 
+	:a b: the vectors must have the same number of dimensions
 	"""
 	out = []
 	for i in range(len(a)):
@@ -44,7 +46,7 @@ def vector_sub(a:tuple, b:tuple):
 
 def vector_cross_product(a:tuple, b:tuple):
 	""" find the cross product of 2 vectors
-	:a b: the vectors must have 3 dimentions
+	:a b: the vectors must have 3 dimensions
 	"""
 	return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
 
@@ -54,6 +56,10 @@ def is_the_right_parallel(a:tuple, b:tuple):
 
 	a and b must be of same lenght
 	"""
+	if not isinstance(a, tuple) or not isinstance(b, tuple):
+		raise TypeError
+	if len(a) != len(b):
+		raise ValueError
 	for i in range(len(a)):
 		if a[i] < 0 < b[i] or b[i] < 0 < a[i]:
 			return False
@@ -73,10 +79,10 @@ def other_player(player:str):
 def board_to_screen(x:int, y:int, tile_height:float):
 	""" translate the coords of hex tiles to their screen coords
 
-	:x, y: valid board coordonate (Z is not needed)
+	:x, y: valid board coordinate (Z is not needed)
 	:tile_height: the height of a tile on the board in pixel
 
-	see readme.md for infos on the coordonates system
+	see readme.md for infos on the coordinates system
 	"""
 	screen_x = (-((sqrt(3)*y)+(sqrt(3)*x/2)) * tile_height/2) + (sqrt(3)*tile_height*1.25)
 	screen_y = ((3/2) * x * tile_height/2) + (tile_height/2)
@@ -86,7 +92,7 @@ def board_to_screen(x:int, y:int, tile_height:float):
 def get_starting_pos(player):
 	""" generate a list of starting locations for given player
 
-	:player: 'white' or 'black' is the current player
+	:player: 'white' or 'black', corresponds to the current player
 	"""
 	out = []
 
@@ -104,7 +110,7 @@ def get_starting_pos(player):
 def test_get_starting_pos(player):
 	""" made for testing/debugging purpose only
 
-	:player: 'white' or 'black' is the current player
+	:player: 'white' or 'black', corresponds to the current player
 	"""
 	if player == "white":
 		return [(4, -5, 1)]
@@ -117,7 +123,7 @@ def test_get_starting_pos(player):
 def test2_get_starting_pos(player):
 	""" made for testing/debugging purpose only
 
-	:player: 'white' or 'black' is the current player
+	:player: 'white' or 'black', corresponds to the current player
 	"""
 	if player == "white":
 		return [(4, -5, 1)]
@@ -129,7 +135,7 @@ def test2_get_starting_pos(player):
 def validate_coords(coords):
 	""" True if the coordinate are valid, False if not
 
-	:coords: (x,y,z) valid coordonates of the board
+	:coords: (x,y,z) valid coordinates of the board
 
 		usable tiles coords follow a pattern like that:
 		if x = 0 -> y = -8 to 2
@@ -139,6 +145,8 @@ def validate_coords(coords):
 		if x = 7 -> y = -12 to -2
 		z isn't relevant since it depends on the value of x and y at the same time
 	"""
+	if not isinstance(coords, tuple):
+		raise TypeError
 	x = coords[0]
 	y = coords[1]
 	z = coords[2]
@@ -164,10 +172,12 @@ def validate_coords(coords):
 def warp(coords):
 	""" gives the coordinates of the tile they can warp to
 		see readme.md for rules on teleportation
-	:coords: (x,y,z) valid coordonates of the board
+	:coords: (x,y,z) valid coordinates of the board
 
-	:return: warped coordonates, none if cannot warp
+	:return: warped coordinates, none if cannot warp
 	"""
+	if not isinstance(coords, tuple):
+		raise TypeError
 	tmp = (0,coords[1]+ceil(coords[0]/2),coords[2]+floor(coords[0]/2))
 	print("tmp: ",tmp)
 	if tmp in [(0,-9,9),(0,-10,10)]:
@@ -182,6 +192,8 @@ def takes_score(pieces_taken):
 		returns the score to add for x takes
 		it's functionally the same as doing 100*2**(x-1) but it makes you look smarter
 	"""
+	if pieces_taken <= 0:
+		raise ValueError
 	return 100 << (pieces_taken - 1)
 
 
@@ -189,11 +201,13 @@ def get_pieces_bonus(pieces_left, queens):
 	"""
 		gives bonus points based on pieces left and queens
 	"""
+	if pieces_left <= 0 or queens < 0:
+		raise ValueError
 	return 100 << (queens ^ pieces_left) if (queens ^ pieces_left) > queens else 100 << queens
 
 
-def get_time_bonus(time_spent):
-	"""
-		calculates the bonus points for time spent before playing
-	"""
-	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent)
+#def get_time_bonus(time_spent):
+#	"""
+#		calculates the bonus points for time spent before playing
+#	"""
+#	return ceil(time_spent ** pi) if time_spent <= 10 else ceil(pi * time_spent)
