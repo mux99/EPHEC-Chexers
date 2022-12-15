@@ -62,7 +62,7 @@ class App(GameLogic):
 		self._tile_height = 1
 		self.height = None
 
-		#fill board (testing positions)
+		# #fill board (testing positions)
 		# for i in fcts.test2_get_starting_pos("white"):
 		# 	self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
 		# for i in fcts.test2_get_starting_pos("black"):
@@ -123,23 +123,22 @@ class App(GameLogic):
 		# click must be on a piece possessed by current player
 		if not self.is_piece(new_click) or self.get_piece(new_click).player != self._current_player:
 			return
+		
+		# player can only select a better or equal move
+		if (len(self.get_all_takes(new_click,self._current_player)) < len(self._possible_takes) and self._last_click is not None):
+			return
 
 		# something was already selected
 		if self._last_click is not None:
 			self.get_piece(self._last_click).opacity = 255
-			# remove previous takes
-			for i in self._possible_takes:
-				self.get_piece(i).opacity = 255
 
 		# select new piece
 		self._last_click = new_click
 		#self._last_click_time = time()
 		self.get_piece(self._last_click).opacity = self._select_opacity
 
-		if self.get_piece(self._last_click).promotion:
-			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves_queen(self._last_click))
-		else:
-			self._possible_moves = self.filter_moves(self._last_click,self._current_player,self.get_moves(self._last_click,self._current_player))
+		# update possibe moves
+		self._possible_moves = self.get_moves(self._last_click,self._current_player)
 
 	def move(self, new_click:tuple):
 		""" move selected piece to clicked location (if valid)
@@ -149,30 +148,39 @@ class App(GameLogic):
 
 			do nothing if clicked tile isn't empty
 		"""
-		if not self.is_piece(new_click) and self._last_click is not None:
-			# only if move is valid
-			if new_click in self._possible_moves:
-				# remove taken pieces
-				taken_pieces = 0
-				for i in self.get_takes(self._last_click, new_click, self._current_player):
-					taken_pieces += 1
-					self.take_piece(i)
-				if taken_pieces > 0:
-					self._player_scores[self._current_player] += fcts.takes_score(taken_pieces)
+		if self.is_piece(new_click) or self._last_click is None:
+			return
+		# only if move is valid
+		found = None
+		for i in self._possible_moves:
+			if fcts.warp(i) == new_click:
+				found = i
+				break
+		if found is None:
+			return
+		
+		# remove taken pieces
+		taken_pieces = 0
+		for i in self.get_takes(self._last_click, found, self._current_player):
+			taken_pieces += 1
+			self.take_piece(fcts.warp(i))
+		if taken_pieces > 0:
+			self._player_scores[self._current_player] += fcts.takes_score(taken_pieces)
 
-				# move player
-				self.get_piece(self._last_click).coord = new_click
-				self.get_piece(new_click).opacity = 255
-				
-				# select same piece if a take can be done
-				self._last_click = None
-				if len(self.get_all_takes(new_click,self._current_player)) > 0 and taken_pieces > 0:
-					self.select(new_click)
-					self._continue = True
-				else:
-					self._current_player = fcts.other_player(self._current_player)
-					self._player_indicator.image = self.textures[self._current_player+"_icon"]
-					self._continue = False
+		# move player
+		self.get_piece(self._last_click).coord = new_click
+		self.get_piece(new_click).opacity = 255
+			
+		# select same piece if a take can be done
+		self._last_click = None
+		if len(self.get_all_takes(new_click,self._current_player)) > 0 and taken_pieces > 0:
+			self.select(new_click)
+			self._continue = True
+		else:
+			self._current_player = fcts.other_player(self._current_player)
+			self.select(self.get_preselection(self._current_player))
+			self._player_indicator.image = self.textures[self._current_player+"_icon"]
+			self._continue = False
 
 	def update(self):
 		""" update and refresh various parameters of the game
@@ -200,7 +208,7 @@ class App(GameLogic):
 			for i in self._possible_takes:
 				self.get_piece(i).opacity = 200
 
-		if self._last_click is None:
+		else:
 			self._possible_takes = []
 
 			
@@ -228,7 +236,7 @@ class App(GameLogic):
 			or click coordinates are not on the board
 		"""
 		new_click = fcts.screen_to_board(screen_x, screen_y, self._tile_height)
-		#print(new_click)
+		# print("click: ",new_click)
 
 		# discard invalid clicks
 		if not fcts.validate_coords(new_click):

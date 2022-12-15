@@ -27,11 +27,13 @@ def read_csv(filename):
 
 
 def is_file(path):
-    if os.path.exists(path):
-        return True
-    else:
-        return False
+    if type(path) != str:
+        raise TypeError
+    return os.path.exists(path)
 
 def create_file(path):
+    if type(path) != str:
+        raise TypeError
     if not is_file(path):
-        open(path, 'w')
+        with open(path, 'w'):
+            pass
