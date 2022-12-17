@@ -7,6 +7,7 @@
 - [ ] get_all_takes
 - [ ] get_takes
 - [ ] get_moves
+- [ ] get_moves_queen
 - [ ] filter_moves
 - [ ] get_winner
 - [ ] is_game_finished
@@ -39,26 +40,23 @@
 - [ ] sort  
 
 *fcts*
-- [x] screen_to_board
-- [x] vector_add
-- [x] vector_sub
-- [x] vector_cross_product
-- [x] is_the_right_parallel
-- [x] other_player
-- [x] board_to_screen
-- [x] get_starting_pos
-- [x] get_starting_pos_test
-- [x] get_starting_pos_test2
-- [x] validate_coords
-- [x] warp
-- [x] takes_score
-- [x] get_pieces_bonus
-- [-] get_time_bonus  
+- [ ] screen_to_board
+- [ ] vector_add
+- [ ] vector_sub
+- [ ] vector_cross_product
+- [ ] is_the_right_parallel
+- [ ] other_player
+- [ ] board_to_screen
+- [ ] get_starting_pos
+- [ ] test_get_starting_pos
+- [ ] test2_get_starting_pos
+- [ ] validate_coords
+- [ ] warp
+- [ ] takes_score
+- [ ] get_pieces_bonus
+- [ ] get_time_bonus  
 
 *file_interaction*
 - [ ] read_csv  
-- [ ] is_file
-- [ ] create_file
 
 ### Features
-- [ ] None
