@@ -138,7 +138,7 @@ class GameLogic:
                 out.append(warp_coord)
 
             # normal
-            if not self.is_piece(tmp) and fcts.validate_coords(tmp):
+            elif not self.is_piece(tmp) and fcts.validate_coords(tmp):
                 out.append(tmp)
 
         # back takes
@@ -162,25 +162,17 @@ class GameLogic:
                         (-1, 2, -1), (-2, 1, 1), (-1, -1, 2)]
         warp_coords = {}
 
+        # forward moves
         for i in valid_moves:
+            # try every tiles in the direction of vector i
             tmp = fcts.vector_add(coord, i)
             warp_coord = fcts.warp(tmp)
-            if warp_coord is not None and not self.is_piece(warp_coord):
-                out.append(warp_coord)
-                warp_coords[warp_coord] = i
             while not self.is_piece(tmp) and fcts.validate_coords(tmp):
                 out.append(tmp)
                 tmp = fcts.vector_add(tmp, i)
                 warp_coord = fcts.warp(tmp)
                 if warp_coord is not None and not self.is_piece(warp_coord):
                     out.append(warp_coord)
-                    warp_coords[warp_coord] = i
-
-        for w, m in warp_coords.items():
-            tmp = fcts.vector_add(w, m)
-            while not self.is_piece(tmp) and fcts.validate_coords(tmp):
-                out.append(tmp)
-                tmp = fcts.vector_add(tmp, m)
         return out
 
     def filter_moves(self, coord, player, moves):

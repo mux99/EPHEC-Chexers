@@ -67,6 +67,7 @@ class App(GameLogic):
 		# 	self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))
 		# for i in fcts.test2_get_starting_pos("black"):
 		# 	self._pieces.append(Piece(i,"black",self.textures["black"],self.textures["black_queen"]))
+		
 		#fill board
 		for i in fcts.get_starting_pos("white"):
 			self._pieces.append(Piece(i,"white",self.textures["white"],self.textures["white_queen"]))

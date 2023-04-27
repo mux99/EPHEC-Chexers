@@ -8,7 +8,7 @@
 
 import pyglet
 
-from bin.file_intercation import read_csv, is_file, create_file
+from bin.file_interaction import read_csv, is_file, create_file
 
 txt_h = 19.6
 font_h = 35

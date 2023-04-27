@@ -153,8 +153,7 @@ def validate_coords(coords):
 
 
 def warp(coords):
-	""" gives the coordinates of the tile they can warp to
-		see readme.md for rules on teleportation
+	""" gives the warped coordonates
 	:coords: (x,y,z) valid coordinates of the board
 
 	:return: warped coordinates, None if cannot warp
