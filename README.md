@@ -1,4 +1,4 @@
-# EPHEC-T201-Dammes
+# Chexers
 
 ## Synopsis
 This is a school project, meant to create a game of *checkers* with extra rules. Apparently this group don't seem to bother with easy, so we went with an hexagonal grid. On top of that, we added teleportation (yes otherwise it's not confusing enough). Finally we went with a graphical interface despite the requirements beeing only for a console base game. We tried it, it's unplayable in console.
